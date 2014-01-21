@@ -11,7 +11,7 @@
 		3FC30D38188AFF3900DA490D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3FC30D36188AFF3900DA490D /* InfoPlist.strings */; };
 		3FC30D3A188AFF3900DA490D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FC30D39188AFF3900DA490D /* main.m */; };
 		3FC30D3E188AFF3900DA490D /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 3FC30D3C188AFF3900DA490D /* Credits.rtf */; };
-		3FC30D41188AFF3900DA490D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FC30D40188AFF3900DA490D /* AppDelegate.m */; };
+		3FC30D41188AFF3900DA490D /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3FC30D40188AFF3900DA490D /* AppDelegate.mm */; };
 		3FC30D44188AFF3900DA490D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3FC30D42188AFF3900DA490D /* MainMenu.xib */; };
 		3FC30D47188AFF3900DA490D /* ParticlesOSX.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3FC30D45188AFF3900DA490D /* ParticlesOSX.xcdatamodeld */; };
 		3FC30D49188AFF3900DA490D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3FC30D48188AFF3900DA490D /* Images.xcassets */; };
@@ -19,6 +19,22 @@
 		3FC30D51188AFF3900DA490D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FC30D2D188AFF3900DA490D /* Cocoa.framework */; };
 		3FC30D59188AFF3900DA490D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3FC30D57188AFF3900DA490D /* InfoPlist.strings */; };
 		3FC30D5B188AFF3900DA490D /* ParticlesOSXTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FC30D5A188AFF3900DA490D /* ParticlesOSXTests.m */; };
+		3FC30D66188B046300DA490D /* CustomOpenGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3FC30D65188B046300DA490D /* CustomOpenGLView.mm */; };
+		3FC30D69188B0A2E00DA490D /* MyOpenGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3FC30D68188B0A2E00DA490D /* MyOpenGLView.mm */; };
+		3FC30D6B188B0B5600DA490D /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FC30D6A188B0B5600DA490D /* OpenGL.framework */; };
+		3FC30D6E188B2A9800DA490D /* Particle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3FC30D6C188B2A9800DA490D /* Particle.cpp */; };
+		3FC30D70188B2B3600DA490D /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FC30D6F188B2B3600DA490D /* GLKit.framework */; };
+		3FC30D73188B2CA000DA490D /* ParticleApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3FC30D71188B2CA000DA490D /* ParticleApp.cpp */; };
+		3FC30D76188B3A5400DA490D /* Params.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3FC30D74188B3A5400DA490D /* Params.cpp */; };
+		3FC30D79188B3C4600DA490D /* ParticleController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3FC30D77188B3C4600DA490D /* ParticleController.cpp */; };
+		3FC30D7C188B3FFB00DA490D /* Color.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3FC30D7A188B3FFB00DA490D /* Color.cpp */; };
+		3FF5AB82188E489C00BC067C /* Vec2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3FF5AB80188E489C00BC067C /* Vec2.cpp */; };
+		3FF5AB85188E48C100BC067C /* GLAppController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FF5AB84188E48C100BC067C /* GLAppController.m */; };
+		3FF5AB87188E4CA600BC067C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FF5AB86188E4CA600BC067C /* QuartzCore.framework */; };
+		3FFB0101188B446C00B6A52B /* Rand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3FFB00FF188B446C00B6A52B /* Rand.cpp */; };
+		3FFB0107188B583C00B6A52B /* Clock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3FFB0105188B583C00B6A52B /* Clock.cpp */; };
+		3FFB010A188C77C500B6A52B /* Shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3FFB0108188C77C500B6A52B /* Shader.cpp */; };
+		3FFB010D188C77D700B6A52B /* ShaderProgram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3FFB010B188C77D700B6A52B /* ShaderProgram.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,7 +59,7 @@
 		3FC30D3B188AFF3900DA490D /* ParticlesOSX-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ParticlesOSX-Prefix.pch"; sourceTree = "<group>"; };
 		3FC30D3D188AFF3900DA490D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		3FC30D3F188AFF3900DA490D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		3FC30D40188AFF3900DA490D /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		3FC30D40188AFF3900DA490D /* AppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
 		3FC30D43188AFF3900DA490D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		3FC30D46188AFF3900DA490D /* ParticlesOSX.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ParticlesOSX.xcdatamodel; sourceTree = "<group>"; };
 		3FC30D48188AFF3900DA490D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
@@ -52,6 +68,35 @@
 		3FC30D56188AFF3900DA490D /* ParticlesOSXTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ParticlesOSXTests-Info.plist"; sourceTree = "<group>"; };
 		3FC30D58188AFF3900DA490D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		3FC30D5A188AFF3900DA490D /* ParticlesOSXTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ParticlesOSXTests.m; sourceTree = "<group>"; };
+		3FC30D64188B046300DA490D /* CustomOpenGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomOpenGLView.h; sourceTree = "<group>"; };
+		3FC30D65188B046300DA490D /* CustomOpenGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CustomOpenGLView.mm; sourceTree = "<group>"; };
+		3FC30D67188B0A2E00DA490D /* MyOpenGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyOpenGLView.h; sourceTree = "<group>"; };
+		3FC30D68188B0A2E00DA490D /* MyOpenGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MyOpenGLView.mm; sourceTree = "<group>"; };
+		3FC30D6A188B0B5600DA490D /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = ../../../../System/Library/Frameworks/OpenGL.framework; sourceTree = "<group>"; };
+		3FC30D6C188B2A9800DA490D /* Particle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Particle.cpp; sourceTree = "<group>"; };
+		3FC30D6D188B2A9800DA490D /* Particle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Particle.h; sourceTree = "<group>"; };
+		3FC30D6F188B2B3600DA490D /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = ../../../../System/Library/Frameworks/GLKit.framework; sourceTree = "<group>"; };
+		3FC30D71188B2CA000DA490D /* ParticleApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ParticleApp.cpp; sourceTree = "<group>"; };
+		3FC30D72188B2CA000DA490D /* ParticleApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticleApp.h; sourceTree = "<group>"; };
+		3FC30D74188B3A5400DA490D /* Params.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Params.cpp; sourceTree = "<group>"; };
+		3FC30D75188B3A5400DA490D /* Params.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Params.h; sourceTree = "<group>"; };
+		3FC30D77188B3C4600DA490D /* ParticleController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ParticleController.cpp; sourceTree = "<group>"; };
+		3FC30D78188B3C4600DA490D /* ParticleController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticleController.h; sourceTree = "<group>"; };
+		3FC30D7A188B3FFB00DA490D /* Color.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Color.cpp; sourceTree = "<group>"; };
+		3FC30D7B188B3FFB00DA490D /* Color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Color.h; sourceTree = "<group>"; };
+		3FF5AB80188E489C00BC067C /* Vec2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Vec2.cpp; sourceTree = "<group>"; };
+		3FF5AB81188E489C00BC067C /* Vec2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vec2.h; sourceTree = "<group>"; };
+		3FF5AB83188E48C100BC067C /* GLAppController.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = GLAppController.h; sourceTree = "<group>"; };
+		3FF5AB84188E48C100BC067C /* GLAppController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLAppController.m; sourceTree = "<group>"; };
+		3FF5AB86188E4CA600BC067C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		3FFB00FF188B446C00B6A52B /* Rand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Rand.cpp; sourceTree = "<group>"; };
+		3FFB0100188B446C00B6A52B /* Rand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Rand.h; sourceTree = "<group>"; };
+		3FFB0105188B583C00B6A52B /* Clock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Clock.cpp; sourceTree = "<group>"; };
+		3FFB0106188B583C00B6A52B /* Clock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Clock.h; sourceTree = "<group>"; };
+		3FFB0108188C77C500B6A52B /* Shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Shader.cpp; sourceTree = "<group>"; };
+		3FFB0109188C77C500B6A52B /* Shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shader.h; sourceTree = "<group>"; };
+		3FFB010B188C77D700B6A52B /* ShaderProgram.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShaderProgram.cpp; sourceTree = "<group>"; };
+		3FFB010C188C77D700B6A52B /* ShaderProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderProgram.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,7 +104,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3FF5AB87188E4CA600BC067C /* QuartzCore.framework in Frameworks */,
 				3FC30D2E188AFF3900DA490D /* Cocoa.framework in Frameworks */,
+				3FC30D70188B2B3600DA490D /* GLKit.framework in Frameworks */,
+				3FC30D6B188B0B5600DA490D /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -97,6 +145,7 @@
 		3FC30D2C188AFF3900DA490D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3FF5AB86188E4CA600BC067C /* QuartzCore.framework */,
 				3FC30D2D188AFF3900DA490D /* Cocoa.framework */,
 				3FC30D4F188AFF3900DA490D /* XCTest.framework */,
 				3FC30D2F188AFF3900DA490D /* Other Frameworks */,
@@ -107,6 +156,8 @@
 		3FC30D2F188AFF3900DA490D /* Other Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3FC30D6F188B2B3600DA490D /* GLKit.framework */,
+				3FC30D6A188B0B5600DA490D /* OpenGL.framework */,
 				3FC30D30188AFF3900DA490D /* AppKit.framework */,
 				3FC30D31188AFF3900DA490D /* CoreData.framework */,
 				3FC30D32188AFF3900DA490D /* Foundation.framework */,
@@ -118,11 +169,37 @@
 			isa = PBXGroup;
 			children = (
 				3FC30D3F188AFF3900DA490D /* AppDelegate.h */,
-				3FC30D40188AFF3900DA490D /* AppDelegate.m */,
+				3FC30D40188AFF3900DA490D /* AppDelegate.mm */,
+				3FC30D64188B046300DA490D /* CustomOpenGLView.h */,
+				3FC30D65188B046300DA490D /* CustomOpenGLView.mm */,
+				3FC30D67188B0A2E00DA490D /* MyOpenGLView.h */,
+				3FC30D68188B0A2E00DA490D /* MyOpenGLView.mm */,
+				3FF5AB83188E48C100BC067C /* GLAppController.h */,
+				3FF5AB84188E48C100BC067C /* GLAppController.m */,
 				3FC30D42188AFF3900DA490D /* MainMenu.xib */,
 				3FC30D48188AFF3900DA490D /* Images.xcassets */,
 				3FC30D45188AFF3900DA490D /* ParticlesOSX.xcdatamodeld */,
 				3FC30D34188AFF3900DA490D /* Supporting Files */,
+				3FC30D7A188B3FFB00DA490D /* Color.cpp */,
+				3FC30D7B188B3FFB00DA490D /* Color.h */,
+				3FC30D71188B2CA000DA490D /* ParticleApp.cpp */,
+				3FC30D72188B2CA000DA490D /* ParticleApp.h */,
+				3FC30D6C188B2A9800DA490D /* Particle.cpp */,
+				3FC30D6D188B2A9800DA490D /* Particle.h */,
+				3FC30D74188B3A5400DA490D /* Params.cpp */,
+				3FC30D75188B3A5400DA490D /* Params.h */,
+				3FC30D77188B3C4600DA490D /* ParticleController.cpp */,
+				3FC30D78188B3C4600DA490D /* ParticleController.h */,
+				3FFB00FF188B446C00B6A52B /* Rand.cpp */,
+				3FFB0100188B446C00B6A52B /* Rand.h */,
+				3FFB0105188B583C00B6A52B /* Clock.cpp */,
+				3FFB0106188B583C00B6A52B /* Clock.h */,
+				3FF5AB80188E489C00BC067C /* Vec2.cpp */,
+				3FF5AB81188E489C00BC067C /* Vec2.h */,
+				3FFB0108188C77C500B6A52B /* Shader.cpp */,
+				3FFB0109188C77C500B6A52B /* Shader.h */,
+				3FFB010B188C77D700B6A52B /* ShaderProgram.cpp */,
+				3FFB010C188C77D700B6A52B /* ShaderProgram.h */,
 			);
 			path = ParticlesOSX;
 			sourceTree = "<group>";
@@ -255,9 +332,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3FC30D41188AFF3900DA490D /* AppDelegate.m in Sources */,
+				3FC30D79188B3C4600DA490D /* ParticleController.cpp in Sources */,
+				3FC30D66188B046300DA490D /* CustomOpenGLView.mm in Sources */,
+				3FC30D73188B2CA000DA490D /* ParticleApp.cpp in Sources */,
+				3FFB010A188C77C500B6A52B /* Shader.cpp in Sources */,
+				3FC30D6E188B2A9800DA490D /* Particle.cpp in Sources */,
+				3FFB010D188C77D700B6A52B /* ShaderProgram.cpp in Sources */,
+				3FC30D41188AFF3900DA490D /* AppDelegate.mm in Sources */,
+				3FC30D69188B0A2E00DA490D /* MyOpenGLView.mm in Sources */,
+				3FFB0101188B446C00B6A52B /* Rand.cpp in Sources */,
+				3FF5AB82188E489C00BC067C /* Vec2.cpp in Sources */,
+				3FFB0107188B583C00B6A52B /* Clock.cpp in Sources */,
 				3FC30D47188AFF3900DA490D /* ParticlesOSX.xcdatamodeld in Sources */,
+				3FF5AB85188E48C100BC067C /* GLAppController.m in Sources */,
+				3FC30D7C188B3FFB00DA490D /* Color.cpp in Sources */,
 				3FC30D3A188AFF3900DA490D /* main.m in Sources */,
+				3FC30D76188B3A5400DA490D /* Params.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -386,12 +476,14 @@
 		3FC30D5F188AFF3900DA490D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ParticlesOSX/ParticlesOSX-Prefix.pch";
 				INFOPLIST_FILE = "ParticlesOSX/ParticlesOSX-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				USER_HEADER_SEARCH_PATHS = "\"/Volumes/big bad bawdy brawler/dev/boost_1_55_0\"";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -399,12 +491,14 @@
 		3FC30D60188AFF3900DA490D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ParticlesOSX/ParticlesOSX-Prefix.pch";
 				INFOPLIST_FILE = "ParticlesOSX/ParticlesOSX-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				USER_HEADER_SEARCH_PATHS = "\"/Volumes/big bad bawdy brawler/dev/boost_1_55_0\"";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -468,6 +562,7 @@
 				3FC30D60188AFF3900DA490D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		3FC30D61188AFF3900DA490D /* Build configuration list for PBXNativeTarget "ParticlesOSXTests" */ = {
 			isa = XCConfigurationList;
@@ -476,6 +571,7 @@
 				3FC30D63188AFF3900DA490D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
