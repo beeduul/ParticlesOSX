@@ -16,14 +16,22 @@ public:
     ShaderProgram();
     ~ShaderProgram();
 
-    bool initialize(VertexShader vertex_shader, FragmentShader fragment_shader);
+    bool initialize(std::string vertex_shader_source, std::string fragment_shader_source);
     
     void useProgram();
     void unuseProgram();
     
+    GLuint id() { return m_shader_program; }
+    
 private:
+    VertexShader m_vertex_shader;
+    FragmentShader m_fragment_shader;
+    
     bool m_initialized;
     GLuint m_shader_program;
 };
+
+typedef std::shared_ptr<ShaderProgram> ShaderProgramPtr;
+
 
 #endif /* defined(__ParticlesOSX__ShaderProgram__) */

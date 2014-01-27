@@ -9,7 +9,7 @@
 #ifndef __ParticlesOSX__Clock__
 #define __ParticlesOSX__Clock__
 
-#include <ctime>
+#include <chrono>
 
 class Clock {
 
@@ -18,7 +18,7 @@ public:
     static float getElapsedSeconds();
 
 private:
-    static clock_t m_app_start_time;
+    static std::chrono::time_point<std::chrono::system_clock> m_app_start;
 
 };
 #endif /* defined(__ParticlesOSX__Clock__) */

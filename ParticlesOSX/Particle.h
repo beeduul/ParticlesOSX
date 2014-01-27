@@ -6,18 +6,13 @@
 //  Copyright (c) 2014 beeduul. All rights reserved.
 //
 
-#pragma once
-
 #ifndef __ParticlesOSX__Particle__
 #define __ParticlesOSX__Particle__
 
-#include "Clock.h"
-#include "Color.h"
-#include "Vec2.h"
-
 #include "Params.h"
 
-#include <OpenGl/gl3.h>
+#import "MyGLUtilities.h"
+
 #include <vector>
 
 class ParticleController;
@@ -47,7 +42,7 @@ public:
 
     Color getColor();
 
-    const float& radius() { return m_current_radius; }
+    const float radius() { return m_current_radius; }
 //    const float& radius(const float& new_radius) { return m_radius = new_radius; }
     
     const Vec2& loc() { return m_loc; }

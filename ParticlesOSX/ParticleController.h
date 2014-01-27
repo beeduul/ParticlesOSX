@@ -13,7 +13,6 @@
 #include "Params.h"
 #include "ShaderProgram.h"
 
-#include <Vec2.h>
 #include <list>
 #include <array>
 
@@ -26,6 +25,7 @@ public:
     enum ControlType { eMouseDown, eMouseDrag, eMouseUp };
     
     ParticleController(ParticleApp *appPtr);
+    void initialize();
     void update();
     void draw();
     
@@ -77,24 +77,33 @@ private:
     
     bool updateRemove(Particle *p);
     
-    // shaders
-    ShaderProgram m_shader_program;
-    
     // optimized buffer management for particles
-    static const int kMaxParticles = 100000;
-    std::array<float, 4 * kMaxParticles> m_gpuPositionsArray; // x, y, z, radius
-    std::array<float, 4 * kMaxParticles> m_gpuColorsArray;
+
+    static const int kMaxParticles = 200000;
+    static const int kNumVerticesPerParticle = 6;
+    static const int kNumVertexComponents = 2;
+    static const int kNumColorComponents = 3;
+    std::array<float, kMaxParticles * kNumVerticesPerParticle * kNumVertexComponents> m_gpuPositionsArray; // x, y
+
+    std::array<float, kMaxParticles * kNumVerticesPerParticle * kNumColorComponents> m_gpuColorsArray;
     
-    GLuint m_vaoID;                      // three vertex array objects, one for each drawn object
+    GLuint m_vaoID;
     
     GLuint billboard_vertex_buffer;
     GLuint particles_position_buffer;
     GLuint particles_color_buffer;
     void createBuffers();
-    void updateBuffers();
     void drawBuffers();
+    
+    
+    // testing opengl
+    // This will identify our vertex buffer
+    GLuint vertexbuffer;
+
+    Vec2 m_p;
+    
 };
 
-typedef boost::shared_ptr<ParticleController> PtrParticleController;
+typedef std::shared_ptr<ParticleController> PtrParticleController;
 
 #endif /* defined(__ParticlesOSX__ParticleController__) */

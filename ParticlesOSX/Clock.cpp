@@ -8,14 +8,20 @@
 
 #include "Clock.h"
 
-clock_t Clock::m_app_start_time = 0;
+std::chrono::time_point<std::chrono::system_clock> Clock::m_app_start;
 
 void Clock::reset()
 {
-    m_app_start_time = clock();
+    m_app_start = std::chrono::system_clock::now();
 }
+
+#include <iostream>
 
 float Clock::getElapsedSeconds()
 {
-    return (clock() - m_app_start_time) / CLOCKS_PER_SEC;
+    std::chrono::duration<double> elapsed_seconds = std::chrono::system_clock::now() - m_app_start;
+
+//    std::cout << "getElapsedSeconds: " << elapsed_seconds.count() << std::endl;
+    
+    return elapsed_seconds.count();
 }

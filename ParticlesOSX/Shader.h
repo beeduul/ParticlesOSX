@@ -9,8 +9,8 @@
 #ifndef __ParticlesOSX__Shader__
 #define __ParticlesOSX__Shader__
 
-#define GL3_PROTOTYPES
-#include <OpenGL/gl3.h>
+#import "MyGLUtilities.h"
+
 #include <string>
 
 class Shader {

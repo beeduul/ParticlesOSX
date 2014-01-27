@@ -57,6 +57,7 @@ void Particle::initialize(const Vec2 &location, const Vec2 &direction, float vel
     m_vel = velocity;
     
     m_initial_radius = ptrParams->getf("size");
+    m_current_radius = 0;
     
     Color birth_color = ptrParams->getColor("birthColor") + Color(Rand::randFloat(-.1, .1), Rand::randFloat(-.1, .1), Rand::randFloat(-.1, .1));
     Color death_color = ptrParams->getColor("deathColor") + Color(Rand::randFloat(-.1, .1), Rand::randFloat(-.1, .1), Rand::randFloat(-.1, .1));
@@ -123,7 +124,7 @@ void Particle::update_behavior(const ParticleController &pc)
 Color Particle::getColor()
 {
     float t = stage_time() / stage_duration();
-    return Color(stage(), t);
+    return getColor(stage(), t);
 }
 
 Color Particle::getColor(Stage stage, float t)

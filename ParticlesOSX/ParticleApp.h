@@ -12,8 +12,6 @@
 #include "Params.h"
 #include "ParticleController.h"
 
-#include "Vec2.h"
-
 #include <ctime>
 #include <list>
 
@@ -22,6 +20,7 @@ public:
     ParticleApp();
 
     bool initialize();
+    void initializeShaders();
     void init_gl() {}
     void activate() {};
     void deactivate() {};
@@ -33,14 +32,20 @@ public:
     void mouseDownAt(int x, int y);
     void mouseDraggedAt(int x, int y);
     
+    std::string getFileContents(const char *filename);
+    
     static ParamsPtr& params() {
         return m_params;
     }
 
-    Vec2 windowSize() { return m_window_size; }
+    ShaderProgramPtr shaderProgram() { return m_shader_program; }
     
+    Vec2 windowSize() { return m_window_size; }
+
 private:
     bool m_initialized;
+
+    ShaderProgramPtr m_shader_program;
     
     Vec2 m_lastMouseLoc;
     Vec2 m_window_size;
@@ -49,6 +54,11 @@ private:
 
     std::list<PtrParticleController> particleControllers;
 
+    float m_lastAppTime;
+    float m_lastFrameTime;
+
+    std::mutex g_buffer_mutex;
+    
     static ParamsPtr m_params;
 };
 

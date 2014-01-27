@@ -8,7 +8,7 @@
 
 #import "MyOpenGLView.h"
 
-#include <OpenGL/gl3.h>
+#import "MyGLUtilities.h"
 
 // http://devcry.heiho.net/2012/06/os-x-cocoa-game-development-using.html
 @implementation MyOpenGLView

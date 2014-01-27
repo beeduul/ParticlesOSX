@@ -1,0 +1,27 @@
+//
+//  PrefixHeader.pch
+//  ParticlesOSX
+//
+//  Created by Jeremy Biddle on 1/25/14.
+//  Copyright (c) 2014 beeduul. All rights reserved.
+//
+
+#ifndef ParticlesOSX_PrefixHeader_pch
+#define ParticlesOSX_PrefixHeader_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#ifdef __cplusplus
+
+#include "glm/glm.hpp"
+
+#include "Clock.h"
+#include "Rand.h"
+#include "Color.h"
+#include "Vec2.h"
+
+#endif
+
+
+#endif

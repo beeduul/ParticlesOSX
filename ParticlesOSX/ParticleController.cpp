@@ -9,72 +9,30 @@
 #include "ParticleController.h"
 #include "ParticleApp.h"
 
-#include "Rand.h"
-#include "Color.h"
-#include "Vec2.h"
-
 #include <cmath>
 #include <iostream>
 
-std::string g_vertex_shader_source("        \n\
-#version 330                                \n\
-varying vec2 uv;                            \n\
-layout(location = 1) in vec2 position;      \n\
-layout(location = 2) in vec4 colorIn;       \n\
-out vec4 color;                            \n\
-void main() {                               \n\
-    gl_Position = position;                 \n\
-    color = colorIn;                        \n\
-    //gl_TexCoord[0] = gl_MultiTexCoord0;     \n\
-    //uv = vec2(gl_MultiTexCoord0);           \n\
-}                                           \n\
-");
-
-std::string g_fragment_shader_source("                                          \n\
-#version 330                                                                    \n\
-//varying vec2 uv;                                                                \n\
-uniform vec4 color;                                                             \n\
-//uniform float radius;                                                           \n\
-void                                                                            \n\
-main() {                                                                        \n\
-    //float border = 0.1;                                                         \n\
-    //vec4 color0 = vec4(0.0, 0.0, 0.0, 0.0); // border                           \n\
-    //vec2 m = uv - vec2(radius, radius);                                         \n\
-    //float dist = radius - sqrt(m.x * m.x + m.y * m.y);                          \n\
-    //float t = 0.0;                                                              \n\
-    //if (dist > border)                                                          \n\
-    //    t = 1.0;                                                                \n\
-    //else if (dist > 0.0)                                                        \n\
-    //    t = dist / border;                                                      \n\
-    gl_FragColor = color; // mix(color0, color, t);                                       \n\
-}                                                                               \n\
-");
+static const GLfloat g_vertex_buffer_data[] = {
+    -0.5f, -0.5f, 0.0f,
+    0.5f, -0.5f, 0.0f,
+    -0.5f, 0.5f, 0.0f,
+    0.5f, 0.5f, 0.0f,
+};
 
 ParticleController::ParticleController(ParticleApp *appPtr) :
     m_isRecording(false),
     m_useGlobalParams(false),
     m_appPtr(appPtr)
 {
-    bool ok;
-    VertexShader vertex_shader;
-    ok = vertex_shader.initialize(g_vertex_shader_source);
-    if (!ok) {
-        cerr << "VERTEX SHADER ERROR" << endl;
-    }
+}
 
-    FragmentShader fragment_shader;
-    ok = fragment_shader.initialize(g_fragment_shader_source);
-    if (!ok) {
-        cerr << "FRAGMENT SHADER ERROR" << endl;
-    }
-
-    ok = m_shader_program.initialize(vertex_shader, fragment_shader);
-    if (!ok) {
-        cerr << "PROGRAM LINK ERROR" << endl;
-    }
-
-    m_shader_program.useProgram();
+void ParticleController::initialize()
+{
+    int step = 0;
+    cout << "ParticleController " << step++ << endl;;
+    GetGLError();
     
+    createBuffers();
 }
 
 bool ParticleController::isRecording()
@@ -133,6 +91,8 @@ void ParticleController::update()
     // remove dead particles
     list<Particle *>::iterator dead = remove_if(m_particles.begin(), m_particles.end(), bind1st(mem_fun(&ParticleController::updateRemove), this));
     m_particles.erase(dead, m_particles.end());
+
+//    cout << "# particles: " << m_particles.size() << endl;
     
 }
 
@@ -147,45 +107,54 @@ bool ParticleController::updateRemove(Particle *p)
 
 void ParticleController::draw()
 {
-    
     drawBuffers();
-    
-//    for( list<Particle *>::iterator p = m_particles.begin(); p != m_particles.end(); ++p ){
-//        (*p)->draw();
-//    }
 }
 
 void ParticleController::emitParticle(const Vec2 &position, const Vec2 &direction, ParamsPtr ptrParams)
 {
-    Vec2 size = m_appPtr->windowSize();
-    Vec2 center = size / 2.0;
-    
-    Vec2 cPosition = position - center;
-    
-    float pAngle = std::atan2(cPosition.y(), cPosition.x());
-    float dist = cPosition.length(); //sqrt(cPosition.x() * cPosition.x() + cPosition.y() * cPosition.y());
-    
-    float vAngle = std::atan2(direction.y(), direction.x());
-    int symmetry = getParams()->geti("symmetry");
-    float slice = M_PI * 2 / symmetry;
-    
-    for (int i = 0; i < symmetry; i++)
+    if (false)
     {
-        Vec2 newPos = Vec2(cos(pAngle), sin(pAngle)) * dist + center;
-        Vec2 newDir = Vec2(cos(vAngle), sin(vAngle)) * direction.length();
+        int numToAdd = 10;
+        if (m_particles.size() + numToAdd < kMaxParticles) {
+            for (int i = 0; i < numToAdd; i++) {
+                m_particles.push_back(new Particle(position, direction, ptrParams));
+            }
+        }
+
+    } else {
+        Vec2 size = m_appPtr->windowSize();
+        Vec2 center = Vec2(0, 0); // size / 2.0;
         
-        pAngle += slice;
-        vAngle += slice;
+        Vec2 cPosition = position - center;
         
-        int num_particles = getParams()->geti("density");
-        for (int i = 0; i < num_particles; i++) {
-            m_particles.push_back(new Particle(newPos, newDir, ptrParams));
+        float pAngle = std::atan2(cPosition.y(), cPosition.x());
+        float dist = cPosition.length(); //sqrt(cPosition.x() * cPosition.x() + cPosition.y() * cPosition.y());
+        
+        float vAngle = std::atan2(direction.y(), direction.x());
+        ParamsPtr p = getParams();
+        int symmetry = p->geti("symmetry");
+        float slice = M_PI * 2 / symmetry;
+        
+        for (int i = 0; i < symmetry; i++)
+        {
+            Vec2 newPos = Vec2(cos(pAngle), sin(pAngle)) * dist + center;
+            Vec2 newDir = Vec2(cos(vAngle), sin(vAngle)) * direction.length();
+            
+            pAngle += slice;
+            vAngle += slice;
+            
+            int num_particles = getParams()->geti("density");
+            for (int i = 0; i < num_particles; i++) {
+                m_particles.push_back(new Particle(newPos, newDir, ptrParams));
+            }
         }
     }
 }
 
 void ParticleController::addParticleAt(const Vec2 &position, const Vec2 &direction, ControlType type)
 {
+    m_p = position;
+    
     emitParticle(position, direction, getParams());
     
     if (m_isRecording) {
@@ -216,121 +185,147 @@ void ParticleController::moveParticles(const Vec2 &offset)
 
 void ParticleController::createBuffers()
 {
-    // The VBO containing the 4 vertices of the particles.
-    // Thanks to instancing, they will be shared by all particles.
-    static const GLfloat g_vertex_buffer_data[] = {
-        -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        -0.5f, 0.5f, 0.0f,
-        0.5f, 0.5f, 0.0f,
-    };
+
+    // The VBO containing the positions of the particles
+    int positionBufferSize = kMaxParticles * kNumVerticesPerParticle * kNumVertexComponents * sizeof(GLfloat);
+    glGenBuffers(1, &particles_position_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, particles_position_buffer);
+    // Initialize with empty (NULL) buffer : it will be updated later, each frame.
+    glBufferData(GL_ARRAY_BUFFER, positionBufferSize, NULL, GL_STREAM_DRAW);
+
+    GetGLError();
+
+    // The VBO containing the colors of the particles
+    int colorBufferSize = kMaxParticles * kNumVerticesPerParticle * kNumColorComponents * sizeof(GLfloat);
+    glGenBuffers(1, &particles_color_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, particles_color_buffer);
+    // Initialize with empty (NULL) buffer : it will be updated later, each frame.
+    glBufferData(GL_ARRAY_BUFFER, colorBufferSize, NULL, GL_STREAM_DRAW);
+
+    GetGLError();
 
     glGenVertexArrays(1, &m_vaoID);
     glBindVertexArray(m_vaoID);
 
-    glGenBuffers(1, &billboard_vertex_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, billboard_vertex_buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+    GetGLError();
 
-    // The VBO containing the positions and sizes of the particles
-    glGenBuffers(1, &particles_position_buffer);
+    glEnableVertexAttribArray(0); // vertex position
+    glEnableVertexAttribArray(1); // vertex color
+
+    GetGLError();
+
     glBindBuffer(GL_ARRAY_BUFFER, particles_position_buffer);
-    // Initialize with empty (NULL) buffer : it will be updated later, each frame.
-    glBufferData(GL_ARRAY_BUFFER, kMaxParticles * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
+    glVertexAttribPointer(0, kNumVertexComponents, GL_FLOAT, GL_FALSE, 0, NULL);
 
-    // The VBO containing the colors of the particles
-    glGenBuffers(1, &particles_color_buffer);
+    GetGLError();
+
     glBindBuffer(GL_ARRAY_BUFFER, particles_color_buffer);
-    // Initialize with empty (NULL) buffer : it will be updated later, each frame.
-    glBufferData(GL_ARRAY_BUFFER, kMaxParticles * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
-}
+    glVertexAttribPointer(1, kNumColorComponents, GL_FLOAT, GL_FALSE, 0, NULL);
 
-void ParticleController::updateBuffers()
-{
-    // fill the buffers that will be passed to OpenGL
-    int i = 0;
-    for(list<Particle *>::iterator p = m_particles.begin(); p != m_particles.end(); ++p ) {
-        m_gpuPositionsArray[4 * i + 0] = (*p)->loc().x();
-        m_gpuPositionsArray[4 * i + 1] = (*p)->loc().y();
-        m_gpuPositionsArray[4 * i + 2] = 0;
-        m_gpuPositionsArray[4 * i + 3] = (*p)->radius();
-        
-        m_gpuColorsArray[4 * i + 0] = (*p)->getColor().r();
-        m_gpuColorsArray[4 * i + 1] = (*p)->getColor().g();
-        m_gpuColorsArray[4 * i + 2] = (*p)->getColor().b();
-        m_gpuColorsArray[4 * i + 3] = (*p)->getColor().a();
-        
-        i++;
-    }
+    GetGLError();
 
-    // Update the buffers that OpenGL uses for rendering.
-    // There are much more sophisticated means to stream data from the CPU to the GPU,
-    // but this is outside the scope of this tutorial.
-    // http://www.opengl.org/wiki/Buffer_Object_Streaming
-    
-    glBindBuffer(GL_ARRAY_BUFFER, particles_position_buffer);
-    glBufferData(GL_ARRAY_BUFFER, kMaxParticles * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW); // Buffer orphaning, a common way to improve streaming perf. See above link for details.
-    glBufferSubData(GL_ARRAY_BUFFER, 0, numParticles() * sizeof(GLfloat) * 4, &m_gpuPositionsArray[0]);
-    
-    glBindBuffer(GL_ARRAY_BUFFER, particles_color_buffer);
-    glBufferData(GL_ARRAY_BUFFER, kMaxParticles * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW); // Buffer orphaning, a common way to improve streaming perf. See above link for details.
-    glBufferSubData(GL_ARRAY_BUFFER, 0, numParticles() * sizeof(GLfloat) * 4, &m_gpuColorsArray[0]);
 }
 
 void ParticleController::drawBuffers()
 {
-    updateBuffers();
+    int nParticles = numParticles();
     
-    // 1rst attribute buffer : vertices
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, billboard_vertex_buffer);
-    glVertexAttribPointer(
-                          0, // attribute. No particular reason for 0, but must match the layout in the shader.
-                          3, // size
-                          GL_FLOAT, // type
-                          GL_FALSE, // normalized?
-                          0, // stride
-                          (void*)0 // array buffer offset
-                          );
+    int pIdx = 0;
+    if (true) {
+        for(list<Particle *>::iterator p = m_particles.begin(); p != m_particles.end(); p++)
+        {
+            float cx = (*p)->loc().x();
+            float cy = (*p)->loc().y();
+            float radius = (*p)->radius();
+
+            int pIdxBase = pIdx * kNumVerticesPerParticle * kNumVertexComponents;
+            int vIdxBase;
+            
+            // tri 0
+            // vertex 0
+            vIdxBase = pIdxBase + kNumVertexComponents * 0;
+            m_gpuPositionsArray[vIdxBase + 0] = cx - radius;
+            m_gpuPositionsArray[vIdxBase + 1] = cy - radius;
+
+            // vertex 1
+            vIdxBase = pIdxBase + kNumVertexComponents * 1;
+            m_gpuPositionsArray[vIdxBase + 0] = cx - radius;
+            m_gpuPositionsArray[vIdxBase + 1] = cy + radius;
+
+            // vertex 2
+            vIdxBase = pIdxBase + kNumVertexComponents * 2;
+            m_gpuPositionsArray[vIdxBase + 0] = cx + radius;
+            m_gpuPositionsArray[vIdxBase + 1] = cy + radius;
+
+            // tri 1
+            // vertex 3 (repeat v2)
+            vIdxBase = pIdxBase + kNumVertexComponents * 3;
+            m_gpuPositionsArray[vIdxBase + 0] = cx + radius;
+            m_gpuPositionsArray[vIdxBase + 1] = cy + radius;
+            
+            // vertex 4
+            vIdxBase = pIdxBase + kNumVertexComponents * 4;
+            m_gpuPositionsArray[vIdxBase + 0] = cx + radius;
+            m_gpuPositionsArray[vIdxBase + 1] = cy - radius;
+
+            // vertex 5 (repeat v0)
+            vIdxBase = pIdxBase + kNumVertexComponents * 5;
+            m_gpuPositionsArray[vIdxBase + 0] = cx - radius;
+            m_gpuPositionsArray[vIdxBase + 1] = cy - radius;
+
+            
+            int pColorIndexBase = pIdx * kNumVerticesPerParticle * kNumColorComponents;
+            const Color c = (*p)->getColor();
+            for (int i = 0; i < kNumVerticesPerParticle; i++) {
+                int cIdxBase = pColorIndexBase + kNumColorComponents * i;
+                m_gpuColorsArray[cIdxBase + 0] = c.r();
+                m_gpuColorsArray[cIdxBase + 1] = c.g();
+                m_gpuColorsArray[cIdxBase + 2] = c.b();
+            }
+
+            
+            pIdx++;
+        }
+
+        assert(nParticles == pIdx);
+    } else {
+        nParticles = 1;
+        int i = 0;
+        m_gpuPositionsArray[i++] = m_p.x() - 10; m_gpuPositionsArray[i++] = m_p.y() - 10;
+        m_gpuPositionsArray[i++] = m_p.x() - 10; m_gpuPositionsArray[i++] = m_p.y() + 10;
+        m_gpuPositionsArray[i++] = m_p.x() + 10; m_gpuPositionsArray[i++] = m_p.y() + 10;
+        m_gpuPositionsArray[i++] = m_p.x() + 10; m_gpuPositionsArray[i++] = m_p.y() + 10; // v2
+        m_gpuPositionsArray[i++] = m_p.x() + 10; m_gpuPositionsArray[i++] = m_p.y() - 10;
+        m_gpuPositionsArray[i++] = m_p.x() - 10; m_gpuPositionsArray[i++] = m_p.y() - 10; // v0
+        
+        for (int i = 0; i < kNumVerticesPerParticle * kNumColorComponents; i += kNumColorComponents) {
+            m_gpuColorsArray[i+0] = 1; m_gpuColorsArray[i+1] = 0; m_gpuColorsArray[i+2] = 0;
+        }
+    }
     
-    // 2nd attribute buffer : positions of particles' centers
-    glEnableVertexAttribArray(1);
+    glBindVertexArray(m_vaoID);
+    GetGLError();
+
+    int positionBufferSize = kMaxParticles * kNumVerticesPerParticle * kNumVertexComponents * sizeof(GLfloat);
     glBindBuffer(GL_ARRAY_BUFFER, particles_position_buffer);
-    glVertexAttribPointer(
-                          1, // attribute. No particular reason for 1, but must match the layout in the shader.
-                          4, // size : x + y + z + size => 4
-                          GL_FLOAT, // type
-                          GL_FALSE, // normalized?
-                          0, // stride
-                          (void*)0 // array buffer offset
-                          );
-    
-    // 3rd attribute buffer : particles' colors
-    glEnableVertexAttribArray(2);
+    glBufferData(GL_ARRAY_BUFFER, positionBufferSize, &m_gpuPositionsArray[0], GL_STREAM_DRAW);
+    GetGLError();
+
+    int colorBufferSize = kMaxParticles * kNumVerticesPerParticle * kNumColorComponents * sizeof(GLfloat);
     glBindBuffer(GL_ARRAY_BUFFER, particles_color_buffer);
-    glVertexAttribPointer(
-                          2, // attribute. No particular reason for 2, but must match the layout in the shader.
-                          4, // size : r + g + b + a => 4
-                          GL_FLOAT, // type
-                          GL_FALSE, // normalized? *** YES, this means that the unsigned char[4] will be accessible with a vec4 (floats) in the shader ***
-                          0, // stride
-                          (void*)0 // array buffer offset
-                          );
+    glBufferData(GL_ARRAY_BUFFER, colorBufferSize, &m_gpuColorsArray[0], GL_STREAM_DRAW);
+    GetGLError();
+
+    GLint location = glGetUniformLocation(m_appPtr->shaderProgram()->id(), "viewSize");
+    GetGLError();
+    if (location >= 0) {
+        Vec2 windowSize = m_appPtr->windowSize();
+        glUniform2i(location, (int) windowSize.x(), (int) windowSize.y());
+        GetGLError();
+    } else {
+        std::cerr << "Couldn't find uniform viewSize" << std::endl;
+    }
     
-    // These functions are specific to glDrawArrays*Instanced*.
-    // The first parameter is the attribute buffer we're talking about.
-    // The second parameter is the "rate at which generic vertex attributes advance when rendering multiple instances"
-    // http://www.opengl.org/sdk/docs/man/xhtml/glVertexAttribDivisor.xml
-    glVertexAttribDivisor(0, 0); // particles vertices : always reuse the same 4 vertices -> 0
-    glVertexAttribDivisor(1, 1); // positions : one per quad (its center) -> 1
-    glVertexAttribDivisor(2, 1); // color : one per quad -> 1
-    
-    // Draw the particules !
-    // This draws many times a small triangle_strip (which looks like a quad).
-    // This is equivalent to :
-    // for(i in ParticlesCount) : glDrawArrays(GL_TRIANGLE_STRIP, 0, 4),
-    // but faster.
-    int num_particles = numParticles();
-    glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, num_particles);
-    
+    glDrawArrays(GL_TRIANGLES, 0, nParticles * kNumVerticesPerParticle);
+    GetGLError();
 }

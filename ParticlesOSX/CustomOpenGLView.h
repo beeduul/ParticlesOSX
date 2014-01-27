@@ -11,30 +11,24 @@
 #include "ParticleApp.h"
 
 #import <Cocoa/Cocoa.h>
+//#import <QuartzCore/CVDisplayLink.h>
+#import <CoreVideo/CVDisplayLink.h>
 
 @class NSOpenGLContext, NSOpenGLPixelFormat;
 
-@interface CustomOpenGLView : NSView
+@interface CustomOpenGLView : NSOpenGLView
 {
-    @private
-        NSOpenGLContext*     _openGLContext;
-        NSOpenGLPixelFormat* _pixelFormat;
+	CVDisplayLinkRef displayLink;
+
+    NSTimer *renderTimer;
+    
+    ParticleApp app;
 }
 
-//- (void)awakeFromNib;
+- (void)mouseDragged:(NSEvent *)theEvent;
+- (void)mouseDown:(NSEvent *)theEvent;
+- (void)mouseUp:(NSEvent *)theEvent;
 
-- (id)initWithFrame:(NSRect)frameRect pixelFormat:(NSOpenGLPixelFormat*)format;
-
-- (void)setOpenGLContext:(NSOpenGLContext*)context;
-- (NSOpenGLContext*)openGLContext;
-- (void)clearGLContext;
-
-- (void)prepareOpenGL;
-
-- (void)update;
-
-+ (NSOpenGLPixelFormat*)defaultPixelFormat;
-- (void)setPixelFormat:(NSOpenGLPixelFormat*)pixelFormat;
-- (NSOpenGLPixelFormat*)pixelFormat;
+- (void)timerFired:(id)sender;
 
 @end

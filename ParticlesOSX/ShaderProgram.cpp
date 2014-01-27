@@ -16,23 +16,45 @@ ShaderProgram::ShaderProgram() {
     m_initialized = false;
 }
 
-bool ShaderProgram::initialize(VertexShader vertex_shader, FragmentShader fragment_shader)
+bool ShaderProgram::initialize(string vertex_shader_source, string fragment_shader_source)
 {
+    if (m_initialized) {
+        return true;
+    }
+
+    bool ok;
+    
+    cout << "ShaderProgram initialize Vertex Shader " << endl;;
+    ok = m_vertex_shader.initialize(vertex_shader_source);
+    if (!ok) {
+        cerr << "VERTEX SHADER ERROR" << endl;
+    }
+    GetGLError();
+    
+    cout << "ShaderProgram initialize Fragment Shader " << endl;;
+    ok = m_fragment_shader.initialize(fragment_shader_source);
+    if (!ok) {
+        cerr << "FRAGMENT SHADER ERROR" << endl;
+    }
+    GetGLError();
+    
+    cout << "Shader Program glCreateProgram" << endl;;
+
     m_shader_program = glCreateProgram();
 
     /* Attach our shaders to our program */
-    glAttachShader(m_shader_program, vertex_shader.getShaderID());
-    glAttachShader(m_shader_program, fragment_shader.getShaderID());
+    glAttachShader(m_shader_program, m_vertex_shader.getShaderID());
+    glAttachShader(m_shader_program, m_fragment_shader.getShaderID());
  
     // TODO
-//    glBindAttribLocation(m_shader_program, 0, "color");
-//    glBindAttribLocation(m_shader_program, 1, "radius");
+//    glBindAttribLocation(m_shader_program, 1, "position");
+//    glBindAttribLocation(m_shader_program, 2, "colorIn");
     
     glLinkProgram(m_shader_program);
 
-    GLint compiled;
-    glGetProgramiv(m_shader_program, GL_LINK_STATUS, (int *)&compiled);
-    if(!compiled)
+    GLint linked;
+    glGetProgramiv(m_shader_program, GL_LINK_STATUS, (int *)&linked);
+    if(!linked)
     {
         int maxLength;
 
@@ -47,7 +69,7 @@ bool ShaderProgram::initialize(VertexShader vertex_shader, FragmentShader fragme
         
         /* Handle the error in an appropriate way such as displaying a message or writing to a log file. */
         /* In this simple program, we'll just leave */
-        cerr << "Shader Compile error:" << std::endl << infoLog << std::endl;
+        cerr << "Shader Linker error:" << std::endl << infoLog << std::endl;
         
         delete[] infoLog;
     } else {
@@ -58,20 +80,24 @@ bool ShaderProgram::initialize(VertexShader vertex_shader, FragmentShader fragme
 }
 
 ShaderProgram::~ShaderProgram() {
-//    glDetachShader(shaderprogram, vertex_shader.getShaderID());
-//    glDetachShader(shaderprogram, fragment_shader.getShaderID());
-
-    glDeleteProgram(m_shader_program);
+    if (m_initialized) {
+        //    glDetachShader(shaderprogram, m_vertex_shader.getShaderID());
+        //    glDetachShader(shaderprogram, m_fragment_shader.getShaderID());
+        
+        glDeleteProgram(m_shader_program);
+    }
 }
 
 void ShaderProgram::useProgram() {
+    // if m_initialized ...
     glUseProgram(m_shader_program);
 }
 
 void ShaderProgram::unuseProgram() {
+    // if m_initialized ...
     glUseProgram(0);
 
-    // TODO
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
+//    // TODO
+//    glDisableVertexAttribArray(0);
+//    glDisableVertexAttribArray(1);
 }
