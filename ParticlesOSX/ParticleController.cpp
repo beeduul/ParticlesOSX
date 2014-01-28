@@ -192,7 +192,6 @@ void ParticleController::createBuffers()
     glBindBuffer(GL_ARRAY_BUFFER, particles_position_buffer);
     // Initialize with empty (NULL) buffer : it will be updated later, each frame.
     glBufferData(GL_ARRAY_BUFFER, positionBufferSize, NULL, GL_STREAM_DRAW);
-
     GetGLError();
 
     // The VBO containing the colors of the particles
@@ -201,7 +200,12 @@ void ParticleController::createBuffers()
     glBindBuffer(GL_ARRAY_BUFFER, particles_color_buffer);
     // Initialize with empty (NULL) buffer : it will be updated later, each frame.
     glBufferData(GL_ARRAY_BUFFER, colorBufferSize, NULL, GL_STREAM_DRAW);
+    GetGLError();
 
+    int centerBufferSize = kMaxParticles * kNumVerticesPerParticle * kNumVertexComponents * sizeof(GLfloat);
+    glGenBuffers(1, &particles_center_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, particles_center_buffer);
+    glBufferData(GL_ARRAY_BUFFER, centerBufferSize, NULL, GL_STREAM_DRAW);
     GetGLError();
 
     glGenVertexArrays(1, &m_vaoID);
@@ -221,7 +225,12 @@ void ParticleController::createBuffers()
 
     glBindBuffer(GL_ARRAY_BUFFER, particles_color_buffer);
     glVertexAttribPointer(1, kNumColorComponents, GL_FLOAT, GL_FALSE, 0, NULL);
+    
+    GetGLError();
 
+    glBindBuffer(GL_ARRAY_BUFFER, particles_center_buffer);
+    glVertexAttribPointer(2, kNumVertexComponents, GL_FLOAT, GL_FALSE, 0, NULL);
+    
     GetGLError();
 
 }
@@ -316,6 +325,11 @@ void ParticleController::drawBuffers()
     glBufferData(GL_ARRAY_BUFFER, colorBufferSize, &m_gpuColorsArray[0], GL_STREAM_DRAW);
     GetGLError();
 
+    int centerBufferSize = kMaxParticles * kNumVerticesPerParticle * kNumVertexComponents * sizeof(GLfloat);
+    glBindBuffer(GL_ARRAY_BUFFER, particles_center_buffer);
+    glBufferData(GL_ARRAY_BUFFER, centerBufferSize, &m_gpu_ParticleCentersArray[0], GL_STREAM_DRAW);
+    GetGLError();
+    
     GLint location = glGetUniformLocation(m_appPtr->shaderProgram()->id(), "viewSize");
     GetGLError();
     if (location >= 0) {

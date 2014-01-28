@@ -84,14 +84,15 @@ private:
     static const int kNumVertexComponents = 2;
     static const int kNumColorComponents = 3;
     std::array<float, kMaxParticles * kNumVerticesPerParticle * kNumVertexComponents> m_gpuPositionsArray; // x, y
-
-    std::array<float, kMaxParticles * kNumVerticesPerParticle * kNumColorComponents> m_gpuColorsArray;
+    std::array<float, kMaxParticles * kNumVerticesPerParticle * kNumColorComponents> m_gpuColorsArray; // r,g,b
+    std::array<float, kMaxParticles * kNumVerticesPerParticle * kNumVertexComponents> m_gpu_ParticleCentersArray;
     
     GLuint m_vaoID;
     
     GLuint billboard_vertex_buffer;
     GLuint particles_position_buffer;
     GLuint particles_color_buffer;
+    GLuint particles_center_buffer;
     void createBuffers();
     void drawBuffers();
     
