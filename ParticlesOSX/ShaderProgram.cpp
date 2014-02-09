@@ -101,3 +101,33 @@ void ShaderProgram::unuseProgram() {
 //    glDisableVertexAttribArray(0);
 //    glDisableVertexAttribArray(1);
 }
+
+bool ShaderProgram::setUniform2f(const char *uniformName, int v1, int v2)
+{
+    GLint location = glGetUniformLocation(id(), uniformName);
+    GetGLError();
+    
+    if (location >= 0) {
+        glUniform2f(location, v1, v2);
+        GetGLError();
+        return true;
+    } else {
+        std::cerr << "Couldn't find uniform " << uniformName << std::endl;
+        return false;
+    }
+}
+
+bool ShaderProgram::setUniform4fv(const char *uniformName, const float* values)
+{
+    GLint location = glGetUniformLocation(id(), uniformName);
+    GetGLError();
+    
+    if (location >= 0) {
+        glUniform4fv(location, 1, values);
+        GetGLError();
+        return true;
+    } else {
+        std::cerr << "Couldn't find uniform " << uniformName << std::endl;
+        return false;
+    }
+}

@@ -21,6 +21,9 @@ public:
     void useProgram();
     void unuseProgram();
     
+    bool setUniform2f(const char *uniformName, int v1, int v2);
+    bool setUniform4fv(const char *uniformName, const float* values);
+    
     GLuint id() { return m_shader_program; }
     
 private:
