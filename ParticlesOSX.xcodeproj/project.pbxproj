@@ -22,7 +22,6 @@
 		3FC30D59188AFF3900DA490D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3FC30D57188AFF3900DA490D /* InfoPlist.strings */; };
 		3FC30D5B188AFF3900DA490D /* ParticlesOSXTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FC30D5A188AFF3900DA490D /* ParticlesOSXTests.m */; };
 		3FC30D66188B046300DA490D /* CustomOpenGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3FC30D65188B046300DA490D /* CustomOpenGLView.mm */; };
-		3FC30D69188B0A2E00DA490D /* MyOpenGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3FC30D68188B0A2E00DA490D /* MyOpenGLView.mm */; };
 		3FC30D6B188B0B5600DA490D /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FC30D6A188B0B5600DA490D /* OpenGL.framework */; };
 		3FC30D6E188B2A9800DA490D /* Particle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3FC30D6C188B2A9800DA490D /* Particle.cpp */; };
 		3FC30D70188B2B3600DA490D /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FC30D6F188B2B3600DA490D /* GLKit.framework */; };
@@ -62,7 +61,6 @@
 		3FC30D35188AFF3900DA490D /* ParticlesOSX-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ParticlesOSX-Info.plist"; sourceTree = "<group>"; };
 		3FC30D37188AFF3900DA490D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		3FC30D39188AFF3900DA490D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		3FC30D3B188AFF3900DA490D /* ParticlesOSX-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ParticlesOSX-Prefix.pch"; sourceTree = "<group>"; };
 		3FC30D3D188AFF3900DA490D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		3FC30D3F188AFF3900DA490D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		3FC30D40188AFF3900DA490D /* AppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
@@ -76,8 +74,6 @@
 		3FC30D5A188AFF3900DA490D /* ParticlesOSXTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ParticlesOSXTests.m; sourceTree = "<group>"; };
 		3FC30D64188B046300DA490D /* CustomOpenGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomOpenGLView.h; sourceTree = "<group>"; };
 		3FC30D65188B046300DA490D /* CustomOpenGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CustomOpenGLView.mm; sourceTree = "<group>"; };
-		3FC30D67188B0A2E00DA490D /* MyOpenGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyOpenGLView.h; sourceTree = "<group>"; };
-		3FC30D68188B0A2E00DA490D /* MyOpenGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MyOpenGLView.mm; sourceTree = "<group>"; };
 		3FC30D6A188B0B5600DA490D /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = ../../../../System/Library/Frameworks/OpenGL.framework; sourceTree = "<group>"; };
 		3FC30D6C188B2A9800DA490D /* Particle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Particle.cpp; sourceTree = "<group>"; };
 		3FC30D6D188B2A9800DA490D /* Particle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Particle.h; sourceTree = "<group>"; };
@@ -192,8 +188,6 @@
 				3FC30D40188AFF3900DA490D /* AppDelegate.mm */,
 				3FC30D64188B046300DA490D /* CustomOpenGLView.h */,
 				3FC30D65188B046300DA490D /* CustomOpenGLView.mm */,
-				3FC30D67188B0A2E00DA490D /* MyOpenGLView.h */,
-				3FC30D68188B0A2E00DA490D /* MyOpenGLView.mm */,
 				3FF5AB83188E48C100BC067C /* GLAppController.h */,
 				3FF5AB84188E48C100BC067C /* GLAppController.m */,
 				3FC30D48188AFF3900DA490D /* Images.xcassets */,
@@ -232,7 +226,6 @@
 				3FC30D35188AFF3900DA490D /* ParticlesOSX-Info.plist */,
 				3FC30D36188AFF3900DA490D /* InfoPlist.strings */,
 				3FC30D39188AFF3900DA490D /* main.m */,
-				3FC30D3B188AFF3900DA490D /* ParticlesOSX-Prefix.pch */,
 				3FC30D3C188AFF3900DA490D /* Credits.rtf */,
 			);
 			name = "Supporting Files";
@@ -363,7 +356,6 @@
 				3FC30D6E188B2A9800DA490D /* Particle.cpp in Sources */,
 				3FFB010D188C77D700B6A52B /* ShaderProgram.cpp in Sources */,
 				3FC30D41188AFF3900DA490D /* AppDelegate.mm in Sources */,
-				3FC30D69188B0A2E00DA490D /* MyOpenGLView.mm in Sources */,
 				3FFB0101188B446C00B6A52B /* Rand.cpp in Sources */,
 				3FF5AB82188E489C00BC067C /* Vec2.cpp in Sources */,
 				3FFB0107188B583C00B6A52B /* Clock.cpp in Sources */,
