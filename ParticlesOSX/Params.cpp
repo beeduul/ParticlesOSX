@@ -24,7 +24,7 @@ Params::Params()
     seti("density", 10);
     setf("pulse_rate", 0.0);
     setf("pulse_amplitude", 1.0);
-    seti("symmetry", 64);
+    seti("symmetry", 1);
     seti("draw_style", 0);
     setf("gravity", 0);
 }
