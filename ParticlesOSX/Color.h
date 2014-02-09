@@ -45,6 +45,23 @@ public:
     const Color& operator *= (const float& scalar);
     const Color& operator /= (const float& scalar);
 
+    static Color White;
+    static Color LtGray;
+    static Color Gray;
+    static Color DkGray;
+    static Color Black;
+
+    static Color Red;
+    static Color Green;
+    static Color Blue;
+    
+    static Color Yellow;
+    static Color Magenta;
+    static Color Cyan;
+
+    static Color Orange;
+    static Color Purple;
+    
 private:
     Color(GLKVector4 glkVector4);
     GLKVector4 m_color;

@@ -8,6 +8,23 @@
 
 #include "Color.h"
 
+Color Color::Black(0);
+Color Color::DkGray(.333);
+Color Color::Gray(.5);
+Color Color::LtGray(.666);
+Color Color::White(1);
+
+Color Color::Red(1, 0, 0);
+Color Color::Green(0, 1, 0);
+Color Color::Blue(0, 0, 1);
+
+Color Color::Yellow(1, 1, 0);
+Color Color::Magenta(1, 0, 1);
+Color Color::Cyan(0, 1, 1);
+
+Color Color::Orange(1, .5, 0);
+Color Color::Purple(.5, 0, .5);
+
 Color::Color() :
     Color(0, 0, 0)
 {
