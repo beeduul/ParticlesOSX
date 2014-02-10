@@ -10,6 +10,8 @@
 #include "Color.h"
 #include "Particle.h"
 
+#include "ParticleController.h"
+
 #include <cmath>
 
 std::vector<GLfloat *> Particle::m_vec_circle_verts;
@@ -59,8 +61,10 @@ void Particle::initialize(const Vec2 &location, const Vec2 &direction, float vel
     m_initial_radius = ptrParams->getf("size");
     m_current_radius = 0;
     
-    Color birth_color = ptrParams->getColor("birthColor") + Color(Rand::randFloat(-.1, .1), Rand::randFloat(-.1, .1), Rand::randFloat(-.1, .1));
-    Color death_color = ptrParams->getColor("deathColor") + Color(Rand::randFloat(-.1, .1), Rand::randFloat(-.1, .1), Rand::randFloat(-.1, .1));
+    float noise = ptrParams->getf("noise");
+    
+    Color birth_color = ptrParams->getColor("birthColor") + Color(Rand::randFloat(-noise, noise), Rand::randFloat(-noise, noise), Rand::randFloat(-noise, noise));
+    Color death_color = ptrParams->getColor("deathColor") + Color(Rand::randFloat(-noise, noise), Rand::randFloat(-noise, noise), Rand::randFloat(-noise, noise));
     
     m_birth_color = birth_color;
     m_death_color = death_color;
@@ -98,9 +102,9 @@ void Particle::update_behavior(const ParticleController &pc)
     float t = stage_time() / stage_duration();
     
     float t2 = m_freq * (Clock::getElapsedSeconds() - m_start);
-    float swell = (1 + sin(t2)) * m_amp;
+    float swell = (1 + sin(t2)) / 2; //  * m_amp;
     
-    m_current_radius = m_initial_radius * swell;
+    m_current_radius = pc.getParams()->getf("size") * swell; // m_initial_radius * swell;
     switch(stage()) {
         case birth: {
             m_current_radius = m_current_radius * t; // easeOutBack(t); // easeInElastic(t, 5, 3);

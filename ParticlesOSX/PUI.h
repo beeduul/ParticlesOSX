@@ -24,7 +24,7 @@ namespace PUI {
     public:
         Line(Vec2 p0, Vec2 p1) { m_p0 = p0; m_p1 = p1; }
     };
-    
+
     class Rect
     {
     private:
@@ -32,7 +32,7 @@ namespace PUI {
         Vec2 m_p1;
     public:
         Rect(float x0, float y0, float x1, float y1);
-//        Rect(const Vec2& position, const Vec2& size);
+        Rect(const Vec2& position, const PSize& size);
         Rect(const Rect& rect);
 
         const float x0() const { return m_p0.x(); }
@@ -106,17 +106,34 @@ namespace PUI {
         void resize(const Vec2& clip_size); // clip_rect?
     };
     
+    class PControl;
+    
+    class IDelegate
+    {
+    public:
+        virtual void controlCallback(const PControl* control) = 0;
+    };
+    
+    typedef std::shared_ptr<IDelegate> IDelegatePtr;
+    
     class PControl
     {
     protected:
+        std::string m_name;
         Rect m_rect;
         bool m_enabled;
         bool m_visible;
         
+        std::weak_ptr<IDelegate> m_ptrDelegate;
+        
     public:
-        PControl(const Rect& rect);
+        PControl(std::string name, const Rect& rect);
+
+        std::string getName() const { return m_name; }
         const bool contains(Vec2 point) const;
 
+        void setDelegate(IDelegatePtr ptrDelegate);
+        
         virtual void draw(PGraphics& graphics) = 0;
 
         virtual void mouseDown(MouseEvent *event) = 0;
@@ -133,7 +150,7 @@ namespace PUI {
     class PButton : public PControl
     {
     public:
-        PButton(const Rect& rect);
+        PButton(std::string name, const Rect& rect);
     };
 
     class PSlider : public PControl
@@ -143,12 +160,20 @@ namespace PUI {
         float m_previous_value;
         float m_value;
         
+        float m_min;
+        float m_max;
+        
+        Color m_fillColor;
         Color m_borderColor;
+        void setValueInternal(float value);
         
     public:
-        PSlider(const Rect& rect);
+        PSlider(std::string name, float min_value, float max_value, const Rect& rect);
 
-        void setValue(float value) { m_value = value; }
+        void setValue(float value) { m_value = (value - m_min) / (m_max - m_min); }
+        float getValue() const { return (m_max - m_min) * m_value + m_min; }
+
+        void setColors(const Color& fillColor, const Color& borderColor);
         
         virtual void draw(PGraphics& graphics);
 

@@ -21,11 +21,11 @@ Rect::Rect(float x0, float y0, float x1, float y1) :
 {
 }
 
-//Rect::Rect(const Vec2& p0, const Vec2& p1) :
-//    m_p0(p0),
-//    m_p1(p1)
-//{
-//}
+Rect::Rect(const Vec2& p0, const PSize& size) :
+    m_p0(p0),
+    m_p1(p0 + size)
+{
+}
 
 Rect::Rect(const Rect& rect) :
     m_p0(rect.getTopLeft()),
@@ -164,7 +164,8 @@ void PGraphics::drawRect(const Rect &rect)
 }
 
 // PControl
-PControl::PControl(const Rect& rect) :
+PControl::PControl(std::string name, const Rect& rect) :
+    m_name(name),
     m_enabled(true),
     m_visible(true),
     m_rect(rect)
@@ -177,45 +178,68 @@ const bool PControl::contains(Vec2 point) const
     return m_enabled && m_rect.contains(point);
 }
 
-PButton::PButton(const Rect& rect) :
-    PControl(rect)
+void PControl::setDelegate(IDelegatePtr ptrDelegate)
+{
+    m_ptrDelegate = ptrDelegate;
+}
+
+PButton::PButton(std::string name, const Rect& rect) :
+    PControl(name, rect)
 {
 }
 
-PSlider::PSlider(const Rect& rect) :
-    PControl(rect),
+PSlider::PSlider(std::string name, float min, float max, const Rect& rect) :
+    PControl(name, rect),
     m_value(0),
     m_previous_value(0),
+    m_min(min),
+    m_max(max),
     m_borderColor(Color::Black)
 {
+}
+
+void PSlider::setColors(const Color &fillColor, const Color &borderColor)
+{
+    m_fillColor = fillColor;
+    m_borderColor = borderColor;
 }
 
 void PSlider::draw(PGraphics& g)
 {
     float mid_x = m_rect.x0() + (m_rect.x1() - m_rect.x0()) * m_value;
 
-    g.setColor(Color(.3, .3, .3, .6));
+    g.setColor(m_fillColor);
     Rect filled(m_rect.x0(), m_rect.y0(), mid_x, m_rect.y1());
     g.drawRect(filled);
 
-    g.setColor(Color(.6, .6, .6, .3));
-    Rect unfilled(mid_x, m_rect.y0(), m_rect.x1(), m_rect.y1());
-    g.drawRect(unfilled);
+    Color unfilled(m_fillColor);
+    unfilled.a(.3);
+    g.setColor(unfilled);
+    Rect unfilledRect(mid_x, m_rect.y0(), m_rect.x1(), m_rect.y1());
+    g.drawRect(unfilledRect);
     
     g.setStrokeColor(m_borderColor);
     g.drawStrokedRect(m_rect);
 }
 
+void PSlider::setValueInternal(float value)
+{
+    m_value = value;
+    if (auto d = m_ptrDelegate.lock()) {
+        d->controlCallback(this);
+    }
+}
+
 void PSlider::mouseDown(MouseEvent *event)
 {
     m_previous_value = m_value;
-    m_value = (event->getPoint().x() - m_rect.x0()) / m_rect.getWidth();
+    setValueInternal((event->getPoint().x() - m_rect.x0()) / m_rect.getWidth());
 }
 
 void PSlider::mouseUp(MouseEvent *event)
 {
     if (contains(event->getPoint())) {
-        m_value = (event->getPoint().x() - m_rect.x0()) / m_rect.getWidth();
+        setValueInternal((event->getPoint().x() - m_rect.x0()) / m_rect.getWidth());
     } else {
         m_value = m_previous_value;
     }
@@ -224,7 +248,7 @@ void PSlider::mouseUp(MouseEvent *event)
 void PSlider::mouseDrag(MouseEvent *event)
 {
     if (contains(event->getPoint())) {
-        m_value = (event->getPoint().x() - m_rect.x0()) / m_rect.getWidth();
+        setValueInternal((event->getPoint().x() - m_rect.x0()) / m_rect.getWidth());
     } else {
         m_value = m_previous_value;
     }

@@ -24,6 +24,10 @@ Vec2::Vec2(GLKVector2 glkVector2) :
 {
 }
 
+const Vec2 Vec2::operator + (const PSize& size) const {
+    return Vec2(m_vec.x + size.width, m_vec.y + size.height);
+}
+
 const Vec2 Vec2::operator + (const Vec2& other) const {
     return Vec2(GLKVector2Add(m_vec, other.m_vec));
 }

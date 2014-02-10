@@ -7,12 +7,17 @@ in vec2 uv;
 
 void main () {
 
-    float border = 0.05;
+    float border = 0.1;
     float radius = 0.5;
+    
+    // vec4 color0 = vec4(1-color.x, 1-color.y, 1-color.z, 0.0); // COMPLEMENT COLOR BORDER
     vec4 color0 = vec4(0.0, 0.0, 0.0, 0.0); // border
-    vec4 color1 = vec4(color, .5);
+
+    vec4 color1 = vec4(color, 1);
 
     vec2 m = uv - vec2(0.5, 0.5);
+
+    // float dist = (m.x * m.x + m.y * m.y); // HOLES IN THE CENTER OF SQUARES
     float dist = radius - sqrt(m.x * m.x + m.y * m.y);
 
     float t = 0.0;
@@ -20,6 +25,8 @@ void main () {
         t = 1.0;
     else if (dist > 0.0)
         t = dist / border;
+    else
+        discard;
     
     frag_color = mix(color0, color1, t);
 

@@ -27,9 +27,16 @@
 
 - (NSPoint) convertToAppCoordinateSystem:(NSPoint)thePoint;
 
+- (void)keyDown:(NSEvent *)theEvent;
+- (void)keyUp:(NSEvent *)theEvent;
+
 - (void)mouseDragged:(NSEvent *)theEvent;
 - (void)mouseDown:(NSEvent *)theEvent;
 - (void)mouseUp:(NSEvent *)theEvent;
+
+- (void)mouseMoved:(NSEvent *)theEvent;
+- (void)mouseEntered:(NSEvent *)theEvent;
+- (void)mouseExited:(NSEvent *)theEvent;
 
 - (void)timerFired:(id)sender;
 

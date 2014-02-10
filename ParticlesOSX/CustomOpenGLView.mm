@@ -11,6 +11,47 @@
 
 #import "MyGLUtilities.h"
 
+//void decipherKeyEvent((NSEvent *) anEvent, int& ch, int& modifiers)
+//{
+//    // given anEvent (NSEvent*) figure out what key
+//    // and modifiers we actually want to look at,
+//    // to compare it with a menu key description
+//    
+//    unsigned int quals = [anEvent modifierFlags];
+//    
+//    NSString* str = [anEvent characters];
+//    NSString* strWithout = [anEvent charactersIgnoringModifiers];
+//    
+//    unichar ch = [str length] ? [str characterAtIndex:0] : 0;
+//    unichar without = [strWithout length] ? [strWithout characterAtIndex:0] : 0;
+//    
+//    if(!(quals & NSNumericPadKeyMask))
+//    {
+//        if((quals & NSControlKeyMask))
+//        {
+//            ch = without;
+//        }
+//        else if(quals & NSAlternateKeyMask)
+//        {
+//            if(0x20 < ch && ch < 0x7f && ch != without)
+//                quals &= ~NSAlternateKeyMask;
+//            else  ch = without;
+//        }
+//        else if((quals & (NSCommandKeyMask | NSShiftKeyMask)) == (NSCommandKeyMask | NSShiftKeyMask))
+//        {
+//            ch = without;
+//        }
+//        
+//        if((0x20 < ch && ch < 0x7f) || ch == 0x19)
+//            quals &= ~NSShiftKeyMask;
+//    }
+//    
+//    // the resulting values
+//    key = ch;
+//    modifiers = quals & (NSNumericPadKeyMask | NSShiftKeyMask | NSControlKeyMask | NSAlternateKeyMask | NSCommandKeyMask);
+//    
+//}
+
 @interface CustomOpenGLView (PrivateMethods)
 - (void) initGL;
 @end
@@ -48,6 +89,8 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink,
 
 - (void)awakeFromNib
 {
+    [[self window] makeFirstResponder:self];
+    
     NSOpenGLPixelFormatAttribute attrs[] =
 	{
 		NSOpenGLPFADoubleBuffer,
@@ -266,6 +309,31 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink,
 	CGLUnlockContext((CGLContextObj) [[self openGLContext] CGLContextObj]);
 }
 
+- (void)keyDown:(NSEvent *)theEvent {
+    int key;
+    int modifiers;
+//    decipherKeyEvent(theEvent, key, modifiers);
+    
+    NSString *keyCharacters = [theEvent charactersIgnoringModifiers];
+    for (int i = 0; i < [keyCharacters length]; i++) {
+        unichar c = [keyCharacters characterAtIndex: i];
+        app.keyDown(c, modifiers);
+    }
+}
+
+- (void)keyUp:(NSEvent *)theEvent {
+    int key;
+    int modifiers;
+//    decipherKeyEvent(theEvent, key, modifiers);
+
+    NSString *keyCharacters = [theEvent charactersIgnoringModifiers];
+    for (int i = 0; i < [keyCharacters length]; i++) {
+        unichar c = [keyCharacters characterAtIndex: i];
+        app.keyUp(c, modifiers);
+    }
+    
+}
+
 - (NSPoint)convertToAppCoordinateSystem:(NSPoint)thePoint {
     // Get the view size in Points
 	NSRect viewRectPoints = [self bounds];
@@ -331,6 +399,29 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink,
     
     NSPoint appPoint = [self convertToAppCoordinateSystem:aPoint];
     app.mouseUpAt(appPoint.x, appPoint.y);
+}
+
+- (void)mouseMoved:(NSEvent *)theEvent {
+    NSPoint aPoint = [theEvent locationInWindow];
+    //    NSPoint localPoint = [self convertPoint:aPoint fromView:nil];
+    
+    NSPoint appPoint = [self convertToAppCoordinateSystem:aPoint];
+    app.mouseMovedAt(appPoint.x, appPoint.y);
+}
+
+
+- (void)mouseEntered:(NSEvent *)theEvent {
+//    wasAcceptingMouseEvents = [[self window] acceptsMouseMovedEvents];
+    [[self window] setAcceptsMouseMovedEvents:YES];
+//    [[self window] makeFirstResponder:self];
+//    NSPoint eyeCenter = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+//    eyeBox = NSMakeRect((eyeCenter.x-10.0), (eyeCenter.y-10.0), 20.0, 20.0);
+//    [self setNeedsDisplayInRect:eyeBox];
+//    [self displayIfNeeded];
+}
+
+- (void)mouseExited:(NSEvent *)theEvent {
+    [[self window] setAcceptsMouseMovedEvents:YES];
 }
 
 

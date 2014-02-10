@@ -13,12 +13,14 @@
 #include "Params.h"
 #include "ShaderProgram.h"
 
+#include "PUI.h"
+
 #include <list>
 #include <array>
 
 class ParticleApp;
 
-class ParticleController {
+class ParticleController : public PUI::IDelegate {
     
 public:
     
@@ -31,7 +33,7 @@ public:
     void draw();
     
     void setParams(ParamsPtr ptrParams) { m_params = ptrParams; }
-    ParamsPtr getParams() { return m_useGlobalParams ? Params::get() : m_params; }
+    ParamsPtr getParams() const { return m_useGlobalParams ? Params::get() : m_params; }
     
     int numParticles() const { return (int) m_particles.size(); }
     
@@ -46,6 +48,10 @@ public:
     void startRecording();
     void stopRecording();
     bool isRecording();
+    
+    // IDelegate implementation
+    virtual void controlCallback(const PUI::PControl* control);
+    
     
 private:
 
@@ -86,14 +92,14 @@ private:
     static const int kNumColorComponents = 3;
     std::array<float, kMaxParticles * kNumVerticesPerParticle * kNumVertexComponents> m_gpuPositionsArray; // x, y
     std::array<float, kMaxParticles * kNumVerticesPerParticle * kNumColorComponents> m_gpuColorsArray; // r,g,b
-    std::array<float, kMaxParticles * kNumVerticesPerParticle * kNumVertexComponents> m_gpu_ParticleCentersArray;
+//    std::array<float, kMaxParticles * kNumVerticesPerParticle * kNumVertexComponents> m_gpu_ParticleCentersArray;
     std::array<float, kMaxParticles * kNumVerticesPerParticle * kNumVertexComponents> m_gpu_ParticleUVsArray; // u, v
     GLuint m_vao_id;
     
     GLuint billboard_vertex_buffer;
     GLuint particles_position_buffer;
     GLuint particles_color_buffer;
-    GLuint particles_center_buffer;
+//    GLuint particles_center_buffer;
     GLuint particles_uv_buffer;
     void createBuffers();
     void destroyBuffers();

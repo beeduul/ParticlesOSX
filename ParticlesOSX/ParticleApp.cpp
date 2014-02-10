@@ -111,7 +111,97 @@ bool ParticleApp::initialize()
         GetGLError();
         
         m_ui_manager = new PUI::PUIManager;
-        m_ui_manager->addControl(new PUI::PSlider(PUI::Rect(0, 0, 200, 25)));
+
+        int slider_height = 15;
+        int slider_width = 100;
+
+        int control_x = 4;
+        
+        int control_spacing_y = 5;
+        int control_y = control_spacing_y;
+        
+        {
+            Color fillColor = Color(255/255.0, 99/255.0, 71/255.0);
+            PUI::PSlider *pSlider = new PUI::PSlider("size", 1, 30, PUI::Rect(Vec2(control_x, control_y), PSize(slider_width, slider_height)));
+            pSlider->setValue(m_params->getf("size"));
+            pSlider->setColors(fillColor, Color::DkGray);
+            pSlider->setDelegate(ptrParticleController);
+            m_ui_manager->addControl(pSlider);
+            control_y += control_spacing_y + slider_height;
+        }
+
+        {
+            Color fillColor = Color(152/255.0, 251/255.0, 152/255.0);
+            PUI::PSlider *pSlider = new PUI::PSlider("lifespan", 1, 50, PUI::Rect(Vec2(control_x, control_y), PSize(slider_width, slider_height)));
+            pSlider->setValue(m_params->getf("lifespan"));
+            pSlider->setColors(fillColor, Color::DkGray);
+            pSlider->setDelegate(ptrParticleController);
+            m_ui_manager->addControl(pSlider);
+            control_y += control_spacing_y + slider_height;
+        }
+
+        {
+            Color fillColor = Color(255/255.0, 218/255.0, 185/255.0);
+            PUI::PSlider *pSlider = new PUI::PSlider("density", 1, 20, PUI::Rect(Vec2(control_x, control_y), PSize(slider_width, slider_height)));
+            pSlider->setValue(m_params->geti("density"));
+            pSlider->setColors(fillColor, Color::DkGray);
+            pSlider->setDelegate(ptrParticleController);
+            m_ui_manager->addControl(pSlider);
+            control_y += control_spacing_y + slider_height;
+        }
+
+        {
+            Color fillColor = Color(255/255.0, 228/255.0, 225/255.0);
+            PUI::PSlider *pSlider = new PUI::PSlider("pulse_rate", 0, 5, PUI::Rect(Vec2(control_x, control_y), PSize(slider_width, slider_height)));
+            pSlider->setValue(m_params->getf("pulse_rate"));
+            pSlider->setColors(fillColor, Color::DkGray);
+            pSlider->setDelegate(ptrParticleController);
+            m_ui_manager->addControl(pSlider);
+            control_y += control_spacing_y + slider_height;
+        }
+        
+        {
+            Color fillColor = Color(0/255.0, 206/255.0, 209/255.0);
+            PUI::PSlider *pSlider = new PUI::PSlider("gravity", -.5, .5, PUI::Rect(Vec2(control_x, control_y), PSize(slider_width, slider_height)));
+            pSlider->setValue(m_params->getf("gravity"));
+            pSlider->setColors(fillColor, Color::DkGray);
+            pSlider->setDelegate(ptrParticleController);
+            m_ui_manager->addControl(pSlider);
+            control_y += control_spacing_y + slider_height;
+        }
+        
+        {
+            Color fillColor = Color(220/255.0, 20/255.0, 60/255.0);
+            PUI::PSlider *pSlider = new PUI::PSlider("symmetry", 1, 16, PUI::Rect(Vec2(control_x, control_y), PSize(slider_width, slider_height)));
+            pSlider->setValue(m_params->geti("symmetry"));
+            pSlider->setColors(fillColor, Color::DkGray);
+            pSlider->setDelegate(ptrParticleController);
+            m_ui_manager->addControl(pSlider);
+            control_y += control_spacing_y + slider_height;
+        }
+
+        {
+            Color fillColor = Color(255/255.0, 250/255.0, 250/255.0);
+            PUI::PSlider *pSlider = new PUI::PSlider("noise", 0, 1, PUI::Rect(Vec2(control_x, control_y), PSize(slider_width, slider_height)));
+            pSlider->setValue(m_params->getf("noise"));
+            pSlider->setColors(fillColor, Color::DkGray);
+            pSlider->setDelegate(ptrParticleController);
+            m_ui_manager->addControl(pSlider);
+            control_y += control_spacing_y + slider_height;
+        }
+
+        
+        {
+            Color fillColor = Color(255/255.0, 239/255.0, 213/255.0);
+            PUI::PSlider *pSlider = new PUI::PSlider("draw_style", 0, 2, PUI::Rect(Vec2(control_x, control_y), PSize(slider_width, slider_height)));
+            pSlider->setValue(m_params->geti("draw_style"));
+            pSlider->setColors(fillColor, Color::DkGray);
+            pSlider->setDelegate(ptrParticleController);
+            m_ui_manager->addControl(pSlider);
+            control_y += control_spacing_y + slider_height;
+        }
+
+        
     }
     cout << "ParticleApp.initialized " << endl;
     
@@ -207,6 +297,56 @@ void ParticleApp::resize(int w, int h) {
     m_ui_manager->resize(m_window_size);
     glViewport(0, 0, w, h);
     cout << "resize " << w << " x " << h << endl;
+}
+
+void ParticleApp::keyDown(int keyCode, int modifiers)
+{
+    switch (keyCode) {
+        case 'c': {
+            BOOST_FOREACH(PtrParticleController particleController, particleControllers) {
+                particleController->removeParticles(particleController->numParticles());
+            }
+        } break;
+            
+        case 'f': {
+            //            setFullScreen(!isFullScreen());
+        } break;
+            
+        case 'S': {
+            int symmetry = m_params->geti("symmetry");
+            symmetry--;
+            if (symmetry == 0) {
+                symmetry = MAX_SYMMETRY;
+            }
+            m_params->seti("symmetry", symmetry);
+//            m_symmetrySlider->setValue(symmetry);
+        } break;
+            
+        case 's': {
+            int symmetry = m_params->geti("symmetry");
+            symmetry++;
+            if (symmetry > MAX_SYMMETRY) {
+                symmetry = 1;
+            }
+            m_params->seti("symmetry", symmetry);
+//            m_symmetrySlider->setValue(symmetry);
+        } break;
+
+        case 'r': {
+            PtrParticleController activeController = particleControllers.front();
+            activeController->startRecording();
+        } break;
+    }
+}
+
+void ParticleApp::keyUp(int keyCode, int modifiers)
+{
+    switch (keyCode) {
+        case 'r': {
+            PtrParticleController activeController = particleControllers.front();
+            activeController->stopRecording();
+        } break;
+    }
 }
 
 void ParticleApp::mouseDownAt(int x, int y) {

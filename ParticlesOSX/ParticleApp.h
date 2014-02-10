@@ -17,6 +17,8 @@
 #include <ctime>
 #include <list>
 
+#define MAX_SYMMETRY 32
+
 class ParticleApp {
 public:
     ParticleApp();
@@ -31,6 +33,9 @@ public:
     void update();
     void draw();
     void resize(int w, int h);
+    
+    void keyDown(int keyCode, int modifiers);
+    void keyUp(int keyCode, int modifiers);
     
     void mouseDownAt(int x, int y);
     void mouseDraggedAt(int x, int y);

@@ -40,6 +40,48 @@ void ParticleController::initialize()
     createBuffers();
 }
 
+void ParticleController::controlCallback(const PUI::PControl* control)
+{
+    string name = control->getName();
+    cout << "controlCallback '" << name << "'" << endl;
+    
+//    if(name == ">>" || name == "<<")
+//    {
+//        m_toggleMenu = true;
+//    } else if (name == "kinect") {
+//        m_params->setb("kinect", !m_params->getb("kinect"));
+//    } else if (name == "kdepth") {
+//        ciUIRangeSlider *rslider = (ciUIRangeSlider *) event->widget;
+//        m_params->setf("kdepthThresholdLo", rslider->getScaledValueLow());
+//        m_params->setf("kdepthThresholdHi", rslider->getScaledValueHigh());
+//        //    } else if (name == "bounce") {
+//        //        m_params->setb("bounce", !m_params->getb("bounce"));
+//        
+//    } else
+    if (name == "pulse_rate") {
+        m_params->setf(name, ((PUI::PSlider *) control)->getValue());
+//    } else if (name == "pulse_amplitude") {
+//        ciUISlider *slider = (ciUISlider *) event->widget;
+//        m_params->setf("pulse_amplitude", slider->getScaledValue());
+//        
+    } else if (name == "gravity") {
+        m_params->setf(name, ((PUI::PSlider *) control)->getValue());
+    } else if (name == "size") {
+        m_params->setf(name, ((PUI::PSlider *) control)->getValue());
+    } else if (name == "lifespan") {
+        m_params->setf(name, ((PUI::PSlider *) control)->getValue());
+    } else if (name == "density") {
+        m_params->seti(name, ((PUI::PSlider *) control)->getValue());
+    } else if (name == "symmetry") {
+        m_params->seti(name, ((PUI::PSlider *) control)->getValue());
+    } else if (name == "draw_style") {
+        m_params->seti(name, ((PUI::PSlider *) control)->getValue());
+    } else if (name == "noise") {
+        m_params->setf(name, ((PUI::PSlider *) control)->getValue());
+    }
+    
+}
+
 bool ParticleController::isRecording()
 {
     return m_isRecording;
@@ -117,33 +159,25 @@ void ParticleController::draw()
 
 void ParticleController::emitParticle(const Vec2 &position, const Vec2 &direction, ParamsPtr ptrParams)
 {
-    if (false)
+    float pAngle = std::atan2(position.y(), position.x());
+    float dist = position.length();
+    
+    float vAngle = std::atan2(direction.y(), direction.x());
+    ParamsPtr p = getParams();
+    int symmetry = p->geti("symmetry");
+    float slice = M_PI * 2 / symmetry;
+    
+    for (int i = 0; i < symmetry; i++)
     {
-        int numToAdd = 10;
-        if (m_particles.size() + numToAdd < kMaxParticles) {
-            for (int i = 0; i < numToAdd; i++) {
-                m_particles.push_back(new Particle(position, direction, ptrParams));
-            }
-        }
+        Vec2 newPos = Vec2(cos(pAngle), sin(pAngle)) * dist;
+        Vec2 newDir = Vec2(cos(vAngle), sin(vAngle)) * direction.length();
+        
+        pAngle += slice;
+        vAngle += slice;
+        
+        int num_particles = getParams()->geti("density");
 
-    } else {
-        float pAngle = std::atan2(position.y(), position.x());
-        float dist = position.length();
-        
-        float vAngle = std::atan2(direction.y(), direction.x());
-        ParamsPtr p = getParams();
-        int symmetry = p->geti("symmetry");
-        float slice = M_PI * 2 / symmetry;
-        
-        for (int i = 0; i < symmetry; i++)
-        {
-            Vec2 newPos = Vec2(cos(pAngle), sin(pAngle)) * dist;
-            Vec2 newDir = Vec2(cos(vAngle), sin(vAngle)) * direction.length();
-            
-            pAngle += slice;
-            vAngle += slice;
-            
-            int num_particles = getParams()->geti("density");
+        if (m_particles.size() + num_particles < kMaxParticles) {
             for (int i = 0; i < num_particles; i++) {
                 m_particles.push_back(new Particle(newPos, newDir, ptrParams));
             }
@@ -188,7 +222,7 @@ void ParticleController::destroyBuffers()
     glDeleteVertexArrays(1, &m_vao_id);
     glDeleteBuffers(1, &particles_position_buffer);
     glDeleteBuffers(1, &particles_color_buffer);
-    glDeleteBuffers(1, &particles_center_buffer);
+//    glDeleteBuffers(1, &particles_center_buffer);
     glDeleteBuffers(1, &particles_uv_buffer);
 }
 
@@ -211,11 +245,11 @@ void ParticleController::createBuffers()
     glBufferData(GL_ARRAY_BUFFER, colorBufferSize, NULL, GL_STREAM_DRAW);
     GetGLError();
 
-    int centerBufferSize = kMaxParticles * kNumVerticesPerParticle * kNumVertexComponents * sizeof(GLfloat);
-    glGenBuffers(1, &particles_center_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, particles_center_buffer);
-    glBufferData(GL_ARRAY_BUFFER, centerBufferSize, NULL, GL_STREAM_DRAW);
-    GetGLError();
+//    int centerBufferSize = kMaxParticles * kNumVerticesPerParticle * kNumVertexComponents * sizeof(GLfloat);
+//    glGenBuffers(1, &particles_center_buffer);
+//    glBindBuffer(GL_ARRAY_BUFFER, particles_center_buffer);
+//    glBufferData(GL_ARRAY_BUFFER, centerBufferSize, NULL, GL_STREAM_DRAW);
+//    GetGLError();
 
     // The VBO containing the uvs of the particles
     int uvBuffersSize = kMaxParticles * kNumVerticesPerParticle * kNumVertexComponents * sizeof(GLfloat);
@@ -232,8 +266,8 @@ void ParticleController::createBuffers()
 
     glEnableVertexAttribArray(0); // vertex position
     glEnableVertexAttribArray(1); // vertex color
-    glEnableVertexAttribArray(2); // vertex center
-    glEnableVertexAttribArray(3); // vertex uv
+    glEnableVertexAttribArray(2); // vertex uv
+//    glEnableVertexAttribArray(3); // vertex center
 
     GetGLError();
 
@@ -247,15 +281,16 @@ void ParticleController::createBuffers()
     
     GetGLError();
 
-    glBindBuffer(GL_ARRAY_BUFFER, particles_center_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, particles_uv_buffer);
     glVertexAttribPointer(2, kNumVertexComponents, GL_FLOAT, GL_FALSE, 0, NULL);
     
     GetGLError();
 
-    glBindBuffer(GL_ARRAY_BUFFER, particles_uv_buffer);
-    glVertexAttribPointer(3, kNumVertexComponents, GL_FLOAT, GL_FALSE, 0, NULL);
-    
-    GetGLError();
+//    glBindBuffer(GL_ARRAY_BUFFER, particles_center_buffer);
+//    glVertexAttribPointer(3, kNumVertexComponents, GL_FLOAT, GL_FALSE, 0, NULL);
+//    
+//    GetGLError();
+
     
 }
 
@@ -339,7 +374,7 @@ void ParticleController::drawBuffers()
     int positionBufferSize = kMaxParticles * kNumVerticesPerParticle * kNumVertexComponents * sizeof(GLfloat);
     glBindBuffer(GL_ARRAY_BUFFER, particles_position_buffer);
     glBufferData(GL_ARRAY_BUFFER, positionBufferSize, &m_gpuPositionsArray[0], GL_STREAM_DRAW);
-    cout << "numParticles: " << numParticles() << ", positionBufferSize: " << positionBufferSize << endl;
+//    cout << "numParticles: " << numParticles() << ", positionBufferSize: " << positionBufferSize << endl;
     GetGLError();
 
     int colorBufferSize = kMaxParticles * kNumVerticesPerParticle * kNumColorComponents * sizeof(GLfloat);
@@ -347,10 +382,10 @@ void ParticleController::drawBuffers()
     glBufferData(GL_ARRAY_BUFFER, colorBufferSize, &m_gpuColorsArray[0], GL_STREAM_DRAW);
     GetGLError();
 
-    int centerBufferSize = kMaxParticles * kNumVerticesPerParticle * kNumVertexComponents * sizeof(GLfloat);
-    glBindBuffer(GL_ARRAY_BUFFER, particles_center_buffer);
-    glBufferData(GL_ARRAY_BUFFER, centerBufferSize, &m_gpu_ParticleCentersArray[0], GL_STREAM_DRAW);
-    GetGLError();
+//    int centerBufferSize = kMaxParticles * kNumVerticesPerParticle * kNumVertexComponents * sizeof(GLfloat);
+//    glBindBuffer(GL_ARRAY_BUFFER, particles_center_buffer);
+//    glBufferData(GL_ARRAY_BUFFER, centerBufferSize, &m_gpu_ParticleCentersArray[0], GL_STREAM_DRAW);
+//    GetGLError();
     
     int uvBufferSize = kMaxParticles * kNumVerticesPerParticle * kNumVertexComponents * sizeof(GLfloat);
     glBindBuffer(GL_ARRAY_BUFFER, particles_uv_buffer);

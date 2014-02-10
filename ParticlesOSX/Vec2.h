@@ -12,6 +12,13 @@
 
 #include <GLKit/GLKVector2.h>
 
+struct PSize
+{
+    PSize(int w, int h) { width = w; height = h; }
+    float width, height;
+};
+
+
 class Vec2 {
 public:
     Vec2();
@@ -20,7 +27,9 @@ public:
     
     const float x() const { return m_vec.x; }
     const float y() const { return m_vec.y; }
-    
+
+    const Vec2 operator + (const PSize& size) const;
+
     const Vec2 operator + (const Vec2& other) const;
     const Vec2 operator - (const Vec2& other) const;
 
