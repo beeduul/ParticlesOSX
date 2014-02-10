@@ -127,13 +127,8 @@ void ParticleController::emitParticle(const Vec2 &position, const Vec2 &directio
         }
 
     } else {
-        Vec2 size = m_appPtr->windowSize();
-        Vec2 center = Vec2(0, 0); // size / 2.0;
-        
-        Vec2 cPosition = position - center;
-        
-        float pAngle = std::atan2(cPosition.y(), cPosition.x());
-        float dist = cPosition.length(); //sqrt(cPosition.x() * cPosition.x() + cPosition.y() * cPosition.y());
+        float pAngle = std::atan2(position.y(), position.x());
+        float dist = position.length();
         
         float vAngle = std::atan2(direction.y(), direction.x());
         ParamsPtr p = getParams();
@@ -142,7 +137,7 @@ void ParticleController::emitParticle(const Vec2 &position, const Vec2 &directio
         
         for (int i = 0; i < symmetry; i++)
         {
-            Vec2 newPos = Vec2(cos(pAngle), sin(pAngle)) * dist + center;
+            Vec2 newPos = Vec2(cos(pAngle), sin(pAngle)) * dist;
             Vec2 newDir = Vec2(cos(vAngle), sin(vAngle)) * direction.length();
             
             pAngle += slice;
