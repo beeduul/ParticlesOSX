@@ -98,6 +98,10 @@ bool ParticleApp::initialize()
         cout << "DONE ParticleApp " << step++ << endl;
         GetGLError();
         
+        // Enable blending
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        GetGLError();
     }
     cout << "ParticleApp.initialized " << endl;
     
