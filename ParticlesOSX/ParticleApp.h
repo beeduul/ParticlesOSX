@@ -12,12 +12,15 @@
 #include "Params.h"
 #include "ParticleController.h"
 
+#include "PUI.h"
+
 #include <ctime>
 #include <list>
 
 class ParticleApp {
 public:
     ParticleApp();
+    ~ParticleApp();
 
     bool initialize();
     void initializeShaders();
@@ -62,6 +65,10 @@ private:
     std::mutex g_buffer_mutex;
     
     static ParamsPtr m_params;
+
+
+    PUI::PUIManager *m_ui_manager;
+
 };
 
 

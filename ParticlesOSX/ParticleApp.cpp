@@ -23,6 +23,13 @@ ParticleApp::ParticleApp() :
 {
 }
 
+ParticleApp::~ParticleApp()
+{
+    if (m_initialized) {
+        delete m_ui_manager;
+    }
+}
+
 // Function
 void SetCWDToMainBundle()
 {
@@ -102,6 +109,9 @@ bool ParticleApp::initialize()
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         GetGLError();
+        
+        m_ui_manager = new PUI::PUIManager;
+        m_ui_manager->addControl(new PUI::PSlider(PUI::Rect(0, 0, 200, 25)));
     }
     cout << "ParticleApp.initialized " << endl;
     
@@ -154,7 +164,7 @@ void ParticleApp::update() {
     frameTime = frameTime * 0.9 + m_lastFrameTime * 0.1;
     
     if (frameTime > 0) {
-        cout << "FPS: " << int(1 / frameTime) << ", #: " << numParticles << endl;
+        //cout << "FPS: " << int(1 / frameTime) << ", #: " << numParticles << endl;
     }
     
     m_lastAppTime = elapsed;
@@ -184,49 +194,71 @@ void ParticleApp::draw() {
         particleController->draw();
     }
     g_buffer_mutex.unlock();
+    
+    
+    m_ui_manager->draw();
+    
     GetGLError();
 
 }
 
 void ParticleApp::resize(int w, int h) {
     m_window_size = Vec2(w, h);
+    m_ui_manager->resize(m_window_size);
     glViewport(0, 0, w, h);
     cout << "resize " << w << " x " << h << endl;
 }
 
 void ParticleApp::mouseDownAt(int x, int y) {
 
-    x -= windowSize().x() / 2;
-    y -= windowSize().y() / 2;
-    
-    //cout << "mouseDownAt " << x << ", " << y << endl;
-    
-    Color birthColor(Rand::randFloat(), Rand::randFloat(), Rand::randFloat());
-    Color deathColor = Color(1 - birthColor.r(), 1 - birthColor.g(), 1 - birthColor.b());
-    m_params->setColor("birthColor", birthColor);
-    m_params->setColor("deathColor", deathColor);
-    
-    PtrParticleController activeController = particleControllers.front();
-    activeController->setParams(m_params);
-    
-    m_lastMouseLoc = Vec2(x, y);
-    addParticleAt(m_lastMouseLoc, Vec2(0, 0), ParticleController::eMouseDown);
-
+    PUI::MouseEvent event(Vec2(x, y));
+    if (!m_ui_manager->mouseDown(&event)) {
+        x -= windowSize().x() / 2;
+        y -= windowSize().y() / 2;
+        
+        //cout << "mouseDownAt " << x << ", " << y << endl;
+        
+        Color birthColor(Rand::randFloat(), Rand::randFloat(), Rand::randFloat());
+        Color deathColor = Color(1 - birthColor.r(), 1 - birthColor.g(), 1 - birthColor.b());
+        m_params->setColor("birthColor", birthColor);
+        m_params->setColor("deathColor", deathColor);
+        
+        PtrParticleController activeController = particleControllers.front();
+        activeController->setParams(m_params);
+        
+        m_lastMouseLoc = Vec2(x, y);
+        addParticleAt(m_lastMouseLoc, Vec2(0, 0), ParticleController::eMouseDown);
+    }
 }
 
 void ParticleApp::mouseDraggedAt(int x, int y) {
 
-    x -= windowSize().x() / 2;
-    y -= windowSize().y() / 2;
+    PUI::MouseEvent event(Vec2(x, y));
+    if (!m_ui_manager->mouseDrag(&event)) {
 
-    //cout << "mouseDragAt " << x << ", " << y << endl;
+        x -= windowSize().x() / 2;
+        y -= windowSize().y() / 2;
+        
+        //cout << "mouseDragAt " << x << ", " << y << endl;
+        
+        Vec2 mouse_pos = Vec2(x, y);
+        Vec2 mouse_vec = mouse_pos - m_lastMouseLoc;
+        addParticleAt(mouse_pos, mouse_vec * .25, ParticleController::eMouseDrag);
+        
+        m_lastMouseLoc = Vec2(x, y);
+    }
+}
 
-    Vec2 mouse_pos = Vec2(x, y);
-    Vec2 mouse_vec = mouse_pos - m_lastMouseLoc;
-    addParticleAt(mouse_pos, mouse_vec * .25, ParticleController::eMouseDrag);
-    
-    m_lastMouseLoc = Vec2(x, y);
-    
+void ParticleApp::mouseUpAt(int x, int y)
+{
+    PUI::MouseEvent event(Vec2(x, y));
+    m_ui_manager->mouseUp(&event);
+}
+
+void ParticleApp::mouseMovedAt(int x, int y)
+{
+    PUI::MouseEvent event(Vec2(x, y));
+    m_ui_manager->mouseMove(&event);
 }
 
 void ParticleApp::addParticleAt(Vec2 position, Vec2 vector, ParticleController::ControlType type)

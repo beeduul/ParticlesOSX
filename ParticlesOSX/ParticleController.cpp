@@ -26,6 +26,11 @@ ParticleController::ParticleController(ParticleApp *appPtr) :
 {
 }
 
+ParticleController::~ParticleController()
+{
+    destroyBuffers();
+}
+
 void ParticleController::initialize()
 {
     int step = 0;
@@ -183,6 +188,15 @@ void ParticleController::moveParticles(const Vec2 &offset)
     }
 }
 
+void ParticleController::destroyBuffers()
+{
+    glDeleteVertexArrays(1, &m_vao_id);
+    glDeleteBuffers(1, &particles_position_buffer);
+    glDeleteBuffers(1, &particles_color_buffer);
+    glDeleteBuffers(1, &particles_center_buffer);
+    glDeleteBuffers(1, &particles_uv_buffer);
+}
+
 void ParticleController::createBuffers()
 {
 
@@ -232,7 +246,7 @@ void ParticleController::createBuffers()
     glVertexAttribPointer(0, kNumVertexComponents, GL_FLOAT, GL_FALSE, 0, NULL);
 
     GetGLError();
-
+    
     glBindBuffer(GL_ARRAY_BUFFER, particles_color_buffer);
     glVertexAttribPointer(1, kNumColorComponents, GL_FLOAT, GL_FALSE, 0, NULL);
     
@@ -255,75 +269,75 @@ void ParticleController::drawBuffers()
     int nParticles = numParticles();
     
     int pIdx = 0;
-        for(list<Particle *>::iterator p = m_particles.begin(); p != m_particles.end(); p++)
-        {
-            float cx = (*p)->loc().x();
-            float cy = (*p)->loc().y();
-            float radius = (*p)->radius();
+    for(list<Particle *>::iterator p = m_particles.begin(); p != m_particles.end(); p++)
+    {
+        float cx = (*p)->loc().x();
+        float cy = (*p)->loc().y();
+        float radius = (*p)->radius();
 
-            int pIdxBase = pIdx * kNumVerticesPerParticle * kNumVertexComponents;
-            int vIdxBase;
-            
-            // tri 0
-            // vertex 0
-            vIdxBase = pIdxBase + kNumVertexComponents * 0;
-            m_gpuPositionsArray[vIdxBase + 0] = cx - radius;
-            m_gpuPositionsArray[vIdxBase + 1] = cy - radius;
+        int pIdxBase = pIdx * kNumVerticesPerParticle * kNumVertexComponents;
+        int vIdxBase;
+        
+        // tri 0
+        // vertex 0
+        vIdxBase = pIdxBase + kNumVertexComponents * 0;
+        m_gpuPositionsArray[vIdxBase + 0] = cx - radius;
+        m_gpuPositionsArray[vIdxBase + 1] = cy - radius;
         m_gpu_ParticleUVsArray[vIdxBase + 0] = 0;
         m_gpu_ParticleUVsArray[vIdxBase + 1] = 0;
-
-            // vertex 1
-            vIdxBase = pIdxBase + kNumVertexComponents * 1;
-            m_gpuPositionsArray[vIdxBase + 0] = cx - radius;
-            m_gpuPositionsArray[vIdxBase + 1] = cy + radius;
+        
+        // vertex 1
+        vIdxBase = pIdxBase + kNumVertexComponents * 1;
+        m_gpuPositionsArray[vIdxBase + 0] = cx - radius;
+        m_gpuPositionsArray[vIdxBase + 1] = cy + radius;
         m_gpu_ParticleUVsArray[vIdxBase + 0] = 1;
         m_gpu_ParticleUVsArray[vIdxBase + 1] = 0;
 
-            // vertex 2
-            vIdxBase = pIdxBase + kNumVertexComponents * 2;
-            m_gpuPositionsArray[vIdxBase + 0] = cx + radius;
-            m_gpuPositionsArray[vIdxBase + 1] = cy + radius;
+        // vertex 2
+        vIdxBase = pIdxBase + kNumVertexComponents * 2;
+        m_gpuPositionsArray[vIdxBase + 0] = cx + radius;
+        m_gpuPositionsArray[vIdxBase + 1] = cy + radius;
         m_gpu_ParticleUVsArray[vIdxBase + 0] = 1;
         m_gpu_ParticleUVsArray[vIdxBase + 1] = 1;
 
-            // tri 1
-            // vertex 3 (repeat v2)
-            vIdxBase = pIdxBase + kNumVertexComponents * 3;
-            m_gpuPositionsArray[vIdxBase + 0] = cx + radius;
-            m_gpuPositionsArray[vIdxBase + 1] = cy + radius;
+        // tri 1
+        // vertex 3 (repeat v2)
+        vIdxBase = pIdxBase + kNumVertexComponents * 3;
+        m_gpuPositionsArray[vIdxBase + 0] = cx + radius;
+        m_gpuPositionsArray[vIdxBase + 1] = cy + radius;
         m_gpu_ParticleUVsArray[vIdxBase + 0] = 1;
         m_gpu_ParticleUVsArray[vIdxBase + 1] = 1;
-            
-            // vertex 4
-            vIdxBase = pIdxBase + kNumVertexComponents * 4;
-            m_gpuPositionsArray[vIdxBase + 0] = cx + radius;
-            m_gpuPositionsArray[vIdxBase + 1] = cy - radius;
+
+        // vertex 4
+        vIdxBase = pIdxBase + kNumVertexComponents * 4;
+        m_gpuPositionsArray[vIdxBase + 0] = cx + radius;
+        m_gpuPositionsArray[vIdxBase + 1] = cy - radius;
         m_gpu_ParticleUVsArray[vIdxBase + 0] = 0;
         m_gpu_ParticleUVsArray[vIdxBase + 1] = 1;
 
-            // vertex 5 (repeat v0)
-            vIdxBase = pIdxBase + kNumVertexComponents * 5;
-            m_gpuPositionsArray[vIdxBase + 0] = cx - radius;
-            m_gpuPositionsArray[vIdxBase + 1] = cy - radius;
+        // vertex 5 (repeat v0)
+        vIdxBase = pIdxBase + kNumVertexComponents * 5;
+        m_gpuPositionsArray[vIdxBase + 0] = cx - radius;
+        m_gpuPositionsArray[vIdxBase + 1] = cy - radius;
         m_gpu_ParticleUVsArray[vIdxBase + 0] = 0;
         m_gpu_ParticleUVsArray[vIdxBase + 1] = 0;
 
-            
-            int pColorIndexBase = pIdx * kNumVerticesPerParticle * kNumColorComponents;
-            const Color c = (*p)->getColor();
-            for (int i = 0; i < kNumVerticesPerParticle; i++) {
-                int cIdxBase = pColorIndexBase + kNumColorComponents * i;
-                m_gpuColorsArray[cIdxBase + 0] = c.r();
-                m_gpuColorsArray[cIdxBase + 1] = c.g();
-                m_gpuColorsArray[cIdxBase + 2] = c.b();
-            }
-
-            
-            pIdx++;
+        
+        int pColorIndexBase = pIdx * kNumVerticesPerParticle * kNumColorComponents;
+        const Color c = (*p)->getColor();
+        for (int i = 0; i < kNumVerticesPerParticle; i++) {
+            int cIdxBase = pColorIndexBase + kNumColorComponents * i;
+            m_gpuColorsArray[cIdxBase + 0] = c.r();
+            m_gpuColorsArray[cIdxBase + 1] = c.g();
+            m_gpuColorsArray[cIdxBase + 2] = c.b();
         }
 
-        assert(nParticles == pIdx);
         
+        pIdx++;
+    }
+
+    assert(nParticles == pIdx);
+    
     glBindVertexArray(m_vao_id);
     GetGLError();
 

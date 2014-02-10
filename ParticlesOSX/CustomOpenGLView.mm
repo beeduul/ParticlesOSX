@@ -330,6 +330,7 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink,
 //    NSPoint localPoint = [self convertPoint:aPoint fromView:nil];
     
     NSPoint appPoint = [self convertToAppCoordinateSystem:aPoint];
+    app.mouseUpAt(appPoint.x, appPoint.y);
 }
 
 

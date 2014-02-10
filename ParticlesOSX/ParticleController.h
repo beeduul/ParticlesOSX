@@ -25,6 +25,7 @@ public:
     enum ControlType { eMouseDown, eMouseDrag, eMouseUp };
     
     ParticleController(ParticleApp *appPtr);
+    ~ParticleController();
     void initialize();
     void update();
     void draw();
@@ -95,6 +96,7 @@ private:
     GLuint particles_center_buffer;
     GLuint particles_uv_buffer;
     void createBuffers();
+    void destroyBuffers();
     void drawBuffers();
     
     

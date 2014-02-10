@@ -9,6 +9,11 @@
 /* Begin PBXBuildFile section */
 		3F2EBA5C1894272D00FF56DF /* p01.vert in Resources */ = {isa = PBXBuildFile; fileRef = 3F2EBA5B1894272D00FF56DF /* p01.vert */; };
 		3F2EBA5E1894278200FF56DF /* p01.frag in Resources */ = {isa = PBXBuildFile; fileRef = 3F2EBA5D1894278200FF56DF /* p01.frag */; };
+		3F9FECE5189EEA1E00114BA2 /* PUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3F9FECE3189EEA1E00114BA2 /* PUI.cpp */; };
+		3FA7069918A6E60C005E042C /* rect.vert in Sources */ = {isa = PBXBuildFile; fileRef = 3FA7069818A6E60C005E042C /* rect.vert */; };
+		3FA7069B18A6E617005E042C /* rect.frag in Sources */ = {isa = PBXBuildFile; fileRef = 3FA7069A18A6E617005E042C /* rect.frag */; };
+		3FA7069C18A6E998005E042C /* rect.vert in Resources */ = {isa = PBXBuildFile; fileRef = 3FA7069818A6E60C005E042C /* rect.vert */; };
+		3FA7069D18A6E998005E042C /* rect.frag in Resources */ = {isa = PBXBuildFile; fileRef = 3FA7069A18A6E617005E042C /* rect.frag */; };
 		3FC30D2E188AFF3900DA490D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FC30D2D188AFF3900DA490D /* Cocoa.framework */; };
 		3FC30D38188AFF3900DA490D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3FC30D36188AFF3900DA490D /* InfoPlist.strings */; };
 		3FC30D3A188AFF3900DA490D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FC30D39188AFF3900DA490D /* main.m */; };
@@ -53,6 +58,10 @@
 		3F2EBA5B1894272D00FF56DF /* p01.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = p01.vert; path = Shaders/p01.vert; sourceTree = "<group>"; };
 		3F2EBA5D1894278200FF56DF /* p01.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = p01.frag; path = Shaders/p01.frag; sourceTree = "<group>"; };
 		3F2EBA5F1894D46F00FF56DF /* ParticlesOSX-PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ParticlesOSX-PrefixHeader.pch"; sourceTree = "<group>"; };
+		3F9FECE3189EEA1E00114BA2 /* PUI.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PUI.cpp; sourceTree = "<group>"; };
+		3F9FECE4189EEA1E00114BA2 /* PUI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PUI.h; sourceTree = "<group>"; };
+		3FA7069818A6E60C005E042C /* rect.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = rect.vert; path = Shaders/rect.vert; sourceTree = "<group>"; };
+		3FA7069A18A6E617005E042C /* rect.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = rect.frag; sourceTree = "<group>"; };
 		3FC30D2A188AFF3900DA490D /* ParticlesOSX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ParticlesOSX.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3FC30D2D188AFF3900DA490D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		3FC30D30188AFF3900DA490D /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -133,8 +142,19 @@
 			children = (
 				3F2EBA5B1894272D00FF56DF /* p01.vert */,
 				3F2EBA5D1894278200FF56DF /* p01.frag */,
+				3FA7069818A6E60C005E042C /* rect.vert */,
+				3FA7069A18A6E617005E042C /* rect.frag */,
 			);
 			name = Shaders;
+			sourceTree = "<group>";
+		};
+		3F9FECE2189EC9A100114BA2 /* PUI */ = {
+			isa = PBXGroup;
+			children = (
+				3F9FECE3189EEA1E00114BA2 /* PUI.cpp */,
+				3F9FECE4189EEA1E00114BA2 /* PUI.h */,
+			);
+			name = PUI;
 			sourceTree = "<group>";
 		};
 		3FC30D21188AFF3900DA490D = {
@@ -183,6 +203,7 @@
 		3FC30D33188AFF3900DA490D /* ParticlesOSX */ = {
 			isa = PBXGroup;
 			children = (
+				3F9FECE2189EC9A100114BA2 /* PUI */,
 				3F2EBA5A189426DC00FF56DF /* Shaders */,
 				3FC30D3F188AFF3900DA490D /* AppDelegate.h */,
 				3FC30D40188AFF3900DA490D /* AppDelegate.mm */,
@@ -325,6 +346,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3FA7069C18A6E998005E042C /* rect.vert in Resources */,
+				3FA7069D18A6E998005E042C /* rect.frag in Resources */,
 				3FC30D38188AFF3900DA490D /* InfoPlist.strings in Resources */,
 				3F2EBA5E1894278200FF56DF /* p01.frag in Resources */,
 				3F2EBA5C1894272D00FF56DF /* p01.vert in Resources */,
@@ -350,11 +373,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				3FC30D79188B3C4600DA490D /* ParticleController.cpp in Sources */,
+				3FA7069B18A6E617005E042C /* rect.frag in Sources */,
 				3FC30D66188B046300DA490D /* CustomOpenGLView.mm in Sources */,
 				3FC30D73188B2CA000DA490D /* ParticleApp.cpp in Sources */,
 				3FFB010A188C77C500B6A52B /* Shader.cpp in Sources */,
 				3FC30D6E188B2A9800DA490D /* Particle.cpp in Sources */,
+				3FA7069918A6E60C005E042C /* rect.vert in Sources */,
 				3FFB010D188C77D700B6A52B /* ShaderProgram.cpp in Sources */,
+				3F9FECE5189EEA1E00114BA2 /* PUI.cpp in Sources */,
 				3FC30D41188AFF3900DA490D /* AppDelegate.mm in Sources */,
 				3FFB0101188B446C00B6A52B /* Rand.cpp in Sources */,
 				3FF5AB82188E489C00BC067C /* Vec2.cpp in Sources */,
