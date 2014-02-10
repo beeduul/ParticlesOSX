@@ -25,6 +25,8 @@
     ParticleApp app;
 }
 
+- (NSPoint) convertToAppCoordinateSystem:(NSPoint)thePoint;
+
 - (void)mouseDragged:(NSEvent *)theEvent;
 - (void)mouseDown:(NSEvent *)theEvent;
 - (void)mouseUp:(NSEvent *)theEvent;
