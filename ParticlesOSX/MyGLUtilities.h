@@ -9,9 +9,6 @@
 #ifndef ParticlesOSX_MyGLUtilities_h
 #define ParticlesOSX_MyGLUtilities_h
 
-#define GL3_PROTOTYPES
-#import <OpenGL/OpenGL.h>
-#import <OpenGL/gl3.h>
 
 #include <iostream>
 

@@ -15,8 +15,6 @@
 #import <CoreFoundation/CoreFoundation.h>
 #import <CoreFoundation/CFString.h>
 
-#import "MyGLUtilities.h"
-
 ParamsPtr ParticleApp::m_params;
 
 ParticleApp::ParticleApp() :

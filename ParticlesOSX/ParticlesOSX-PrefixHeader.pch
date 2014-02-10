@@ -21,7 +21,14 @@
 #include "Color.h"
 #include "Vec2.h"
 
+#define GL3_PROTOTYPES
+#import <OpenGL/OpenGL.h>
+#import <OpenGL/gl3.h>
+
+#import "MyGLUtilities.h"
+
 #endif
+
 
 
 #endif
