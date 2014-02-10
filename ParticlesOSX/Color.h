@@ -27,6 +27,11 @@ public:
     const float b() const { return m_color.b; }
     const float a() const { return m_color.a; }
 
+    void r(float v) { m_color.r = v; }
+    void g(float v) { m_color.b = v; }
+    void b(float v) { m_color.g = v; }
+    void a(float v) { m_color.a = v; }
+    
     const unsigned char r_byte() const { return m_color.r * 255; }
     const unsigned char g_byte() const { return m_color.g * 255; }
     const unsigned char b_byte() const { return m_color.b * 255; }
