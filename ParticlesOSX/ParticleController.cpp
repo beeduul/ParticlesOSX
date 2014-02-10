@@ -208,13 +208,23 @@ void ParticleController::createBuffers()
     glBufferData(GL_ARRAY_BUFFER, centerBufferSize, NULL, GL_STREAM_DRAW);
     GetGLError();
 
-    glGenVertexArrays(1, &m_vaoID);
-    glBindVertexArray(m_vaoID);
+    // The VBO containing the uvs of the particles
+    int uvBuffersSize = kMaxParticles * kNumVerticesPerParticle * kNumVertexComponents * sizeof(GLfloat);
+    glGenBuffers(1, &particles_uv_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, particles_uv_buffer);
+    glBufferData(GL_ARRAY_BUFFER, uvBuffersSize, NULL, GL_STREAM_DRAW);
+    GetGLError();
+    
+
+    glGenVertexArrays(1, &m_vao_id);
+    glBindVertexArray(m_vao_id);
 
     GetGLError();
 
     glEnableVertexAttribArray(0); // vertex position
     glEnableVertexAttribArray(1); // vertex color
+    glEnableVertexAttribArray(2); // vertex center
+    glEnableVertexAttribArray(3); // vertex uv
 
     GetGLError();
 
@@ -233,6 +243,11 @@ void ParticleController::createBuffers()
     
     GetGLError();
 
+    glBindBuffer(GL_ARRAY_BUFFER, particles_uv_buffer);
+    glVertexAttribPointer(3, kNumVertexComponents, GL_FLOAT, GL_FALSE, 0, NULL);
+    
+    GetGLError();
+    
 }
 
 void ParticleController::drawBuffers()
@@ -240,7 +255,6 @@ void ParticleController::drawBuffers()
     int nParticles = numParticles();
     
     int pIdx = 0;
-    if (true) {
         for(list<Particle *>::iterator p = m_particles.begin(); p != m_particles.end(); p++)
         {
             float cx = (*p)->loc().x();
@@ -255,32 +269,44 @@ void ParticleController::drawBuffers()
             vIdxBase = pIdxBase + kNumVertexComponents * 0;
             m_gpuPositionsArray[vIdxBase + 0] = cx - radius;
             m_gpuPositionsArray[vIdxBase + 1] = cy - radius;
+        m_gpu_ParticleUVsArray[vIdxBase + 0] = 0;
+        m_gpu_ParticleUVsArray[vIdxBase + 1] = 0;
 
             // vertex 1
             vIdxBase = pIdxBase + kNumVertexComponents * 1;
             m_gpuPositionsArray[vIdxBase + 0] = cx - radius;
             m_gpuPositionsArray[vIdxBase + 1] = cy + radius;
+        m_gpu_ParticleUVsArray[vIdxBase + 0] = 1;
+        m_gpu_ParticleUVsArray[vIdxBase + 1] = 0;
 
             // vertex 2
             vIdxBase = pIdxBase + kNumVertexComponents * 2;
             m_gpuPositionsArray[vIdxBase + 0] = cx + radius;
             m_gpuPositionsArray[vIdxBase + 1] = cy + radius;
+        m_gpu_ParticleUVsArray[vIdxBase + 0] = 1;
+        m_gpu_ParticleUVsArray[vIdxBase + 1] = 1;
 
             // tri 1
             // vertex 3 (repeat v2)
             vIdxBase = pIdxBase + kNumVertexComponents * 3;
             m_gpuPositionsArray[vIdxBase + 0] = cx + radius;
             m_gpuPositionsArray[vIdxBase + 1] = cy + radius;
+        m_gpu_ParticleUVsArray[vIdxBase + 0] = 1;
+        m_gpu_ParticleUVsArray[vIdxBase + 1] = 1;
             
             // vertex 4
             vIdxBase = pIdxBase + kNumVertexComponents * 4;
             m_gpuPositionsArray[vIdxBase + 0] = cx + radius;
             m_gpuPositionsArray[vIdxBase + 1] = cy - radius;
+        m_gpu_ParticleUVsArray[vIdxBase + 0] = 0;
+        m_gpu_ParticleUVsArray[vIdxBase + 1] = 1;
 
             // vertex 5 (repeat v0)
             vIdxBase = pIdxBase + kNumVertexComponents * 5;
             m_gpuPositionsArray[vIdxBase + 0] = cx - radius;
             m_gpuPositionsArray[vIdxBase + 1] = cy - radius;
+        m_gpu_ParticleUVsArray[vIdxBase + 0] = 0;
+        m_gpu_ParticleUVsArray[vIdxBase + 1] = 0;
 
             
             int pColorIndexBase = pIdx * kNumVerticesPerParticle * kNumColorComponents;
@@ -297,27 +323,14 @@ void ParticleController::drawBuffers()
         }
 
         assert(nParticles == pIdx);
-    } else {
-        nParticles = 1;
-        int i = 0;
-        m_gpuPositionsArray[i++] = m_p.x() - 10; m_gpuPositionsArray[i++] = m_p.y() - 10;
-        m_gpuPositionsArray[i++] = m_p.x() - 10; m_gpuPositionsArray[i++] = m_p.y() + 10;
-        m_gpuPositionsArray[i++] = m_p.x() + 10; m_gpuPositionsArray[i++] = m_p.y() + 10;
-        m_gpuPositionsArray[i++] = m_p.x() + 10; m_gpuPositionsArray[i++] = m_p.y() + 10; // v2
-        m_gpuPositionsArray[i++] = m_p.x() + 10; m_gpuPositionsArray[i++] = m_p.y() - 10;
-        m_gpuPositionsArray[i++] = m_p.x() - 10; m_gpuPositionsArray[i++] = m_p.y() - 10; // v0
         
-        for (int i = 0; i < kNumVerticesPerParticle * kNumColorComponents; i += kNumColorComponents) {
-            m_gpuColorsArray[i+0] = 1; m_gpuColorsArray[i+1] = 0; m_gpuColorsArray[i+2] = 0;
-        }
-    }
-    
-    glBindVertexArray(m_vaoID);
+    glBindVertexArray(m_vao_id);
     GetGLError();
 
     int positionBufferSize = kMaxParticles * kNumVerticesPerParticle * kNumVertexComponents * sizeof(GLfloat);
     glBindBuffer(GL_ARRAY_BUFFER, particles_position_buffer);
     glBufferData(GL_ARRAY_BUFFER, positionBufferSize, &m_gpuPositionsArray[0], GL_STREAM_DRAW);
+    cout << "numParticles: " << numParticles() << ", positionBufferSize: " << positionBufferSize << endl;
     GetGLError();
 
     int colorBufferSize = kMaxParticles * kNumVerticesPerParticle * kNumColorComponents * sizeof(GLfloat);
@@ -328,6 +341,11 @@ void ParticleController::drawBuffers()
     int centerBufferSize = kMaxParticles * kNumVerticesPerParticle * kNumVertexComponents * sizeof(GLfloat);
     glBindBuffer(GL_ARRAY_BUFFER, particles_center_buffer);
     glBufferData(GL_ARRAY_BUFFER, centerBufferSize, &m_gpu_ParticleCentersArray[0], GL_STREAM_DRAW);
+    GetGLError();
+    
+    int uvBufferSize = kMaxParticles * kNumVerticesPerParticle * kNumVertexComponents * sizeof(GLfloat);
+    glBindBuffer(GL_ARRAY_BUFFER, particles_uv_buffer);
+    glBufferData(GL_ARRAY_BUFFER, uvBufferSize, &m_gpu_ParticleUVsArray[0], GL_STREAM_DRAW);
     GetGLError();
     
     GLint location = glGetUniformLocation(m_appPtr->shaderProgram()->id(), "viewSize");

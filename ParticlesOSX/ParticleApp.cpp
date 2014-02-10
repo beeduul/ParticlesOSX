@@ -166,6 +166,8 @@ void ParticleApp::draw() {
         return;
     }
 
+    m_shader_program->useProgram();
+    
     Color clearColor(145/255.0, 129/255.0, 81/255.0);
     glClearColor(clearColor.r(), clearColor.g(), clearColor.b(), clearColor.a());
     GetGLError();

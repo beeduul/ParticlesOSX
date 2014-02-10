@@ -80,19 +80,20 @@ private:
     // optimized buffer management for particles
 
     static const int kMaxParticles = 200000;
-    static const int kNumVerticesPerParticle = 6;
-    static const int kNumVertexComponents = 2;
+    static const int kNumVerticesPerParticle = 6; // 2 triangles, 3 vertices each
+    static const int kNumVertexComponents = 2; // x, y
     static const int kNumColorComponents = 3;
     std::array<float, kMaxParticles * kNumVerticesPerParticle * kNumVertexComponents> m_gpuPositionsArray; // x, y
     std::array<float, kMaxParticles * kNumVerticesPerParticle * kNumColorComponents> m_gpuColorsArray; // r,g,b
     std::array<float, kMaxParticles * kNumVerticesPerParticle * kNumVertexComponents> m_gpu_ParticleCentersArray;
-    
-    GLuint m_vaoID;
+    std::array<float, kMaxParticles * kNumVerticesPerParticle * kNumVertexComponents> m_gpu_ParticleUVsArray; // u, v
+    GLuint m_vao_id;
     
     GLuint billboard_vertex_buffer;
     GLuint particles_position_buffer;
     GLuint particles_color_buffer;
     GLuint particles_center_buffer;
+    GLuint particles_uv_buffer;
     void createBuffers();
     void drawBuffers();
     

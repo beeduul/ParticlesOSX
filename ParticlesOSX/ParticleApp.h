@@ -31,8 +31,10 @@ public:
     
     void mouseDownAt(int x, int y);
     void mouseDraggedAt(int x, int y);
+    void mouseUpAt(int x, int y);
+    void mouseMovedAt(int x, int y);
     
-    std::string getFileContents(const char *filename);
+    static std::string getFileContents(const char *filename);
     
     static ParamsPtr& params() {
         return m_params;
