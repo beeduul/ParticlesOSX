@@ -172,12 +172,14 @@ bool ParticleApp::initialize()
         
         {
             Color fillColor = Color(220/255.0, 20/255.0, 60/255.0);
-            PUI::PSlider *pSlider = new PUI::PSlider("symmetry", 1, 16, PUI::Rect(Vec2(control_x, control_y), PSize(slider_width, slider_height)));
+            PUI::PSlider *pSlider = new PUI::PSlider("symmetry", 1, MAX_SYMMETRY, PUI::Rect(Vec2(control_x, control_y), PSize(slider_width, slider_height)));
             pSlider->setValue(m_params->geti("symmetry"));
             pSlider->setColors(fillColor, Color::DkGray);
             pSlider->setDelegate(ptrParticleController);
             m_ui_manager->addControl(pSlider);
             control_y += control_spacing_y + slider_height;
+
+            m_symmetry_slider = pSlider;
         }
 
         {
@@ -328,7 +330,7 @@ void ParticleApp::keyDown(int keyCode, int modifiers)
                 symmetry = MAX_SYMMETRY;
             }
             m_params->seti("symmetry", symmetry);
-//            m_symmetrySlider->setValue(symmetry);
+            m_symmetry_slider->setValue(symmetry);
         } break;
             
         case 's': {
@@ -338,7 +340,7 @@ void ParticleApp::keyDown(int keyCode, int modifiers)
                 symmetry = 1;
             }
             m_params->seti("symmetry", symmetry);
-//            m_symmetrySlider->setValue(symmetry);
+            m_symmetry_slider->setValue(symmetry);
         } break;
 
         case 'r': {

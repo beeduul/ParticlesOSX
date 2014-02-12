@@ -17,7 +17,7 @@
 #include <ctime>
 #include <list>
 
-#define MAX_SYMMETRY 32
+#define MAX_SYMMETRY 16
 
 class ParticleApp {
 public:
@@ -71,9 +71,11 @@ private:
     
     static ParamsPtr m_params;
 
-
     PUI::PUIManager *m_ui_manager;
 
+    PUI::PSlider *m_symmetry_slider;
+    
+    
 };
 
 
