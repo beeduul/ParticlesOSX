@@ -377,8 +377,9 @@ void ParticleApp::mouseDownAt(int x, int y) {
         PtrParticleController activeController = particleControllers.front();
         activeController->setParams(m_params);
         
-        m_lastMouseLoc = Vec2(x, y);
-        addParticleAt(m_lastMouseLoc, Vec2(0, 0), ParticleController::eMouseDown);
+        Vec2 mouse_pos(x, y);
+        addParticleAt(mouse_pos, Vec2(0, 0), ParticleController::eMouseDown);
+        m_lastMouseLoc = mouse_pos;
     }
 }
 
@@ -387,8 +388,8 @@ void ParticleApp::mouseDraggedAt(int x, int y) {
     PUI::MouseEvent event(Vec2(x, y));
     if (!m_ui_manager->mouseDrag(&event)) {
 
-        x -= windowSize().x() / 2;
-        y -= windowSize().y() / 2;
+        x -= windowSize().x() / 2.0;
+        y -= windowSize().y() / 2.0;
         
         //cout << "mouseDragAt " << x << ", " << y << endl;
         
@@ -396,7 +397,7 @@ void ParticleApp::mouseDraggedAt(int x, int y) {
         Vec2 mouse_vec = (mouse_pos - m_lastMouseLoc) * m_params->getf("velocity");
         addParticleAt(mouse_pos, mouse_vec, ParticleController::eMouseDrag);
         
-        m_lastMouseLoc = Vec2(x, y);
+        m_lastMouseLoc = mouse_pos;
     }
 }
 
