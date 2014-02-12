@@ -190,6 +190,15 @@ bool ParticleApp::initialize()
             control_y += control_spacing_y + slider_height;
         }
 
+        {
+            Color fillColor = Color(30/255.0, 150/255.0, 250/255.0);
+            PUI::PSlider *pSlider = new PUI::PSlider("velocity", 0, 2, PUI::Rect(Vec2(control_x, control_y), PSize(slider_width, slider_height)));
+            pSlider->setValue(m_params->getf("velocity"));
+            pSlider->setColors(fillColor, Color::DkGray);
+            pSlider->setDelegate(ptrParticleController);
+            m_ui_manager->addControl(pSlider);
+            control_y += control_spacing_y + slider_height;
+        }
         
         {
             Color fillColor = Color(255/255.0, 239/255.0, 213/255.0);
@@ -382,8 +391,8 @@ void ParticleApp::mouseDraggedAt(int x, int y) {
         //cout << "mouseDragAt " << x << ", " << y << endl;
         
         Vec2 mouse_pos = Vec2(x, y);
-        Vec2 mouse_vec = mouse_pos - m_lastMouseLoc;
-        addParticleAt(mouse_pos, mouse_vec * .25, ParticleController::eMouseDrag);
+        Vec2 mouse_vec = (mouse_pos - m_lastMouseLoc) * m_params->getf("velocity");
+        addParticleAt(mouse_pos, mouse_vec, ParticleController::eMouseDrag);
         
         m_lastMouseLoc = Vec2(x, y);
     }

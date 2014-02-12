@@ -78,6 +78,8 @@ void ParticleController::controlCallback(const PUI::PControl* control)
         m_params->seti(name, ((PUI::PSlider *) control)->getValue());
     } else if (name == "noise") {
         m_params->setf(name, ((PUI::PSlider *) control)->getValue());
+    } else if (name == "velocity") {
+        m_params->setf(name, ((PUI::PSlider *) control)->getValue());
     }
     
 }

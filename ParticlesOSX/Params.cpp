@@ -28,6 +28,7 @@ Params::Params()
     seti("draw_style", 0);
     setf("gravity", 0);
     setf("noise", .3);
+    setf("velocity", .25);
 }
 
 ParamsPtr &Params::get()
