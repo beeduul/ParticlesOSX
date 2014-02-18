@@ -57,7 +57,10 @@ private:
 
     ShaderProgramPtr m_shader_program;
     
-    Vec2 m_lastMouseLoc;
+    // high sample rate of mouse movements combined with integer-precision mouse positions create sharp particle movement vectors.  sampling older mouse positions helps with this.
+    const int kCursorPositionVectorMaxLength = 4;
+    list<Vec2> m_recentCursorPositions;
+    
     Vec2 m_window_size;
     
     void addParticleAt(Vec2 position, Vec2 vector, ParticleController::ControlType type);

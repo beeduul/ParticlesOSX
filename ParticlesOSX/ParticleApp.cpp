@@ -379,7 +379,9 @@ void ParticleApp::mouseDownAt(int x, int y) {
         
         Vec2 mouse_pos(x, y);
         addParticleAt(mouse_pos, Vec2(0, 0), ParticleController::eMouseDown);
-        m_lastMouseLoc = mouse_pos;
+
+        m_recentCursorPositions.clear();
+        m_recentCursorPositions.push_front(mouse_pos);
     }
 }
 
@@ -394,10 +396,17 @@ void ParticleApp::mouseDraggedAt(int x, int y) {
         //cout << "mouseDragAt " << x << ", " << y << endl;
         
         Vec2 mouse_pos = Vec2(x, y);
-        Vec2 mouse_vec = (mouse_pos - m_lastMouseLoc) * m_params->getf("velocity");
+        
+        
+        const Vec2& lastCursorPosition = m_recentCursorPositions.back();
+        Vec2 mouse_vec = (mouse_pos - lastCursorPosition) * m_params->getf("velocity") / m_recentCursorPositions.size();
+
         addParticleAt(mouse_pos, mouse_vec, ParticleController::eMouseDrag);
         
-        m_lastMouseLoc = mouse_pos;
+        m_recentCursorPositions.push_front(mouse_pos);
+        if (m_recentCursorPositions.size() > kCursorPositionVectorMaxLength) {
+            m_recentCursorPositions.pop_back();
+        }
     }
 }
 
