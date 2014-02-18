@@ -83,6 +83,8 @@ namespace PUI {
     private:
         GLuint m_vao_id;
         GLuint m_rect_buffer;
+        GLuint m_rect_colors_buffer;
+        
         std::vector<Line> m_vec_lines;
 
         ShaderProgramPtr m_shader_program;
@@ -102,7 +104,7 @@ namespace PUI {
         void setStrokeColor(const Color& stroke_color) { m_stroke_color = stroke_color; }
         void drawStrokedRect(const Rect& rect);
         void drawRect(const Rect& rect);
-        
+        void drawRectGradient(const Rect& rect, const Color& color0, const Color& color1);
         void resize(const Vec2& clip_size); // clip_rect?
     };
     
@@ -167,6 +169,7 @@ namespace PUI {
         
         Color m_fillColor;
         Color m_borderColor;
+        
         void setValueInternal(float value);
         
     public:
@@ -188,6 +191,37 @@ namespace PUI {
         virtual void mouseExit(MouseEvent *event);
 
         virtual void keyDown(KeyEvent *event);
+    };
+    
+    class PColorWell : public PControl
+    {
+    private:
+        Color m_color_min;
+        Color m_color_max;
+        Color m_borderColor;
+
+        float m_previous_value;
+        float m_value;
+
+        void setValueInternal(float value);
+
+    public:
+        PColorWell(std::string name, const Color& color_min, const Color& color_max, const Rect& rect);
+        
+//        void setValue(const Color& color) { m_color = color; }
+        
+        virtual void draw(PGraphics& graphics);
+
+        virtual void mouseDown(MouseEvent *event);
+        virtual void mouseDrag(MouseEvent *event);
+        virtual void mouseUp(MouseEvent *event);
+        
+        // TODO remove requirement
+        virtual void mouseEnter(MouseEvent *event);
+        virtual void mouseMove(MouseEvent *event);
+        virtual void mouseExit(MouseEvent *event);
+        virtual void keyDown(KeyEvent *event);
+
     };
     
     class PUIManager

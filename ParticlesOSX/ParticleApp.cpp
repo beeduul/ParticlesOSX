@@ -211,6 +211,13 @@ bool ParticleApp::initialize()
             m_ui_manager->addControl(pSlider);
             control_y += control_spacing_y + slider_height;
         }
+        
+        {
+            PUI::PColorWell *pColorWell = new PUI::PColorWell("colorwell", Color::Black, Color::White, PUI::Rect(Vec2(control_x, control_y), PSize(slider_width, slider_height)));
+//            pColorWell->setDelegate
+            m_ui_manager->addControl(pColorWell);
+            control_y += control_spacing_y + slider_height;
+        }
 
         
     }

@@ -60,6 +60,16 @@ PGraphics::PGraphics()
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, NULL);
 
     GetGLError();
+
+    glGenBuffers(1, &m_rect_colors_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, m_rect_colors_buffer);
+    
+    GetGLError();
+
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, NULL);
+    
+    GetGLError();
     
     m_shader_program = ShaderProgramPtr(new ShaderProgram);
     
@@ -80,9 +90,9 @@ PGraphics::~PGraphics()
 {
     glDeleteVertexArrays(1, &m_vao_id);
     glDeleteBuffers(1, &m_rect_buffer);
-   
+    glDeleteBuffers(1, &m_rect_colors_buffer);
+    
     GetGLError();
-
 }
 
 void PGraphics::resize(const Vec2 &clip_size)
@@ -94,29 +104,24 @@ void PGraphics::resize(const Vec2 &clip_size)
 void PGraphics::drawStrokedRect(const Rect &rect)
 {
     Vec2 points[4];
-    
     points[0] = rect.getTopLeft();
     points[1] = rect.getTopRight();
     points[2] = rect.getBottomRight();
     points[3] = rect.getBottomLeft();
-
     
-    //    for (int i = 0; i < 8; i++) {
-    //        ((float*) &points)[i] = (int) ((float*) &points)[i];
-    //    }
-    //
-//    cout << "drawStrokedRect " <<
-//    "(" << points[0].x() << ", " << points[0].y() << "), " <<
-//    "(" << points[1].x() << ", " << points[1].y() << "), " <<
-//    "(" << points[2].x() << ", " << points[2].y() << "), " <<
-//    "(" << points[3].x() << ", " << points[3].y() << "), " << endl;
-
     // send rects to the graphics card
     glBindBuffer(GL_ARRAY_BUFFER, m_rect_buffer);
-	glBufferData(GL_ARRAY_BUFFER,
-                 sizeof(points), // float per vertex
-                 points,
-                 GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(points), points, GL_STATIC_DRAW);
+    
+    Color colors[4];
+    colors[0] = m_stroke_color;
+    colors[1] = m_stroke_color;
+    colors[2] = m_stroke_color;
+    colors[3] = m_stroke_color;
+    
+    // send color values to the graphics card
+    glBindBuffer(GL_ARRAY_BUFFER, m_rect_colors_buffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
     
     GetGLError();
 
@@ -124,7 +129,6 @@ void PGraphics::drawStrokedRect(const Rect &rect)
 
     m_shader_program->useProgram();
     m_shader_program->setUniform2f("viewSize", m_clip_size.x(), m_clip_size.y());
-    m_shader_program->setUniform4fv("inColor", m_stroke_color);
     glDrawArrays(GL_LINE_LOOP, 0, 4);
     
     GetGLError();
@@ -133,19 +137,24 @@ void PGraphics::drawStrokedRect(const Rect &rect)
 void PGraphics::drawRect(const Rect &rect)
 {
     Vec2 points[4];
-    
     points[0] = rect.getTopLeft();
     points[1] = rect.getTopRight();
     points[2] = rect.getBottomRight();
     points[3] = rect.getBottomLeft();
-
     
     // send rects to the graphics card
     glBindBuffer(GL_ARRAY_BUFFER, m_rect_buffer);
-	glBufferData(GL_ARRAY_BUFFER,
-                 sizeof(points), // float per vertex
-                 points,
-                 GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(points), points, GL_STATIC_DRAW);
+    
+    Color colors[4];
+    colors[0] = m_color;
+    colors[1] = m_color;
+    colors[2] = m_color;
+    colors[3] = m_color;
+    
+    // send color values to the graphics card
+    glBindBuffer(GL_ARRAY_BUFFER, m_rect_colors_buffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
     
     GetGLError();
     
@@ -153,15 +162,46 @@ void PGraphics::drawRect(const Rect &rect)
     
     m_shader_program->useProgram();
     m_shader_program->setUniform2f("viewSize", m_clip_size.x(), m_clip_size.y()); // TODO
-    m_shader_program->setUniform4fv("inColor", m_color);
-    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
-    m_shader_program->setUniform4fv("inColor", m_stroke_color);
-    glDrawArrays(GL_LINE_LOOP, 0, 4);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
     GetGLError();
 
 }
+
+void PGraphics::drawRectGradient(const PUI::Rect &rect, const Color &color0, const Color &color1)
+{
+    glBindVertexArray(m_vao_id);
+    m_shader_program->useProgram();
+    m_shader_program->setUniform2f("viewSize", m_clip_size.x(), m_clip_size.y()); // TODO
+    
+    Vec2 points[4];
+    points[0] = rect.getTopLeft();
+    points[1] = rect.getTopRight();
+    points[2] = rect.getBottomRight();
+    points[3] = rect.getBottomLeft();
+    
+    // send rects to the graphics card
+    glBindBuffer(GL_ARRAY_BUFFER, m_rect_buffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(points), points, GL_STATIC_DRAW);
+    
+    Color colors[4];
+    colors[0] = color0;
+    colors[1] = color1;
+    colors[2] = color1;
+    colors[3] = color0;
+    
+    // send color values to the graphics card
+    glBindBuffer(GL_ARRAY_BUFFER, m_rect_colors_buffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
+    
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+    
+    GetGLError();
+    
+}
+
+
 
 // PControl
 PControl::PControl(std::string name, const Rect& rect) :
@@ -239,7 +279,7 @@ void PSlider::setValueInternal(float value)
     } else if (value > 1) {
         m_value = 1;
     } else {
-    m_value = value;
+        m_value = value;
     }
     
     if (auto d = m_ptrDelegate.lock()) {
@@ -290,6 +330,70 @@ void PSlider::mouseExit(MouseEvent *event)
 void PSlider::keyDown(KeyEvent *event)
 {
 }
+
+// PColorWell
+PColorWell::PColorWell(std::string name, const Color& color_min, const Color& color_max, const Rect& rect) :
+    PControl(name, rect)
+{
+    m_color_min = color_min;
+    m_color_max = color_max;
+}
+
+void PColorWell::setValueInternal(float value)
+{
+    if (value <= 0) {
+        m_value = 0;
+    } else if (value > 1) {
+        m_value = 1;
+    } else {
+        m_value = value;
+    }
+    
+    if (auto d = m_ptrDelegate.lock()) {
+        d->controlCallback(this);
+    }
+}
+
+void PColorWell::draw(PGraphics& g)
+{
+    float mid_x = m_rect.x0() + (m_rect.x1() - m_rect.x0()) * m_value;
+    
+    Rect filled(m_rect.x0(), m_rect.y0(), mid_x, m_rect.y1());
+    g.drawRectGradient(m_rect, m_color_min, m_color_max);
+    
+    g.setStrokeColor(m_borderColor);
+    g.drawStrokedRect(m_rect);
+}
+
+void PColorWell::mouseDown(MouseEvent *event)
+{
+    m_previous_value = m_value;
+    setValueInternal((event->getPoint().x() - m_rect.x0()) / m_rect.getWidth());
+}
+
+void PColorWell::mouseDrag(MouseEvent *event)
+{
+    if (expandedContains(event->getPoint())) {
+        setValueInternal((event->getPoint().x() - m_rect.x0()) / m_rect.getWidth());
+    } else {
+        m_value = m_previous_value;
+    }
+}
+
+void PColorWell::mouseUp(MouseEvent *event)
+{
+    if (expandedContains(event->getPoint())) {
+        setValueInternal((event->getPoint().x() - m_rect.x0()) / m_rect.getWidth());
+    } else {
+        m_value = m_previous_value;
+    }
+}
+
+void PColorWell::mouseEnter(MouseEvent *event) { }
+void PColorWell::mouseMove(MouseEvent *event) { }
+void PColorWell::mouseExit(MouseEvent *event) { }
+void PColorWell::keyDown(KeyEvent *event) { }
+
 
 // PUI
 
