@@ -34,7 +34,7 @@ Rect::Rect(const Rect& rect) :
 }
 
 
-const bool Rect::contains(Vec2 point) const
+const bool Rect::contains(const Vec2& point) const
 {
     bool x_0 = x0() <= point.x();
     bool x_1 = point.x() <= x1();

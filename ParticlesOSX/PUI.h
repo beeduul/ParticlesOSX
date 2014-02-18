@@ -50,7 +50,7 @@ namespace PUI {
         const Vec2 getBottomRight() const { return  Vec2(x1(), y1()); }
         const Vec2 getBottomLeft() const { return Vec2(x0(), y1()); }
 
-        const bool contains(Vec2 point) const;
+        const bool contains(const Vec2& point) const;
     };
 
     class Event
@@ -130,7 +130,7 @@ namespace PUI {
         PControl(std::string name, const Rect& rect);
 
         std::string getName() const { return m_name; }
-        const bool contains(Vec2 point) const;
+        const bool contains(const Vec2& point) const;
 
         void setDelegate(IDelegatePtr ptrDelegate);
         
