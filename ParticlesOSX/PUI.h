@@ -126,6 +126,8 @@ namespace PUI {
         
         std::weak_ptr<IDelegate> m_ptrDelegate;
         
+        const bool expandedContains(const Vec2& point);
+        
     public:
         PControl(std::string name, const Rect& rect);
 

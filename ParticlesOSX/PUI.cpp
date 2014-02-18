@@ -173,7 +173,17 @@ PControl::PControl(std::string name, const Rect& rect) :
     
 }
 
-const bool PControl::contains(Vec2 point) const
+const bool PControl::expandedContains(const Vec2 &point)
+{
+    const int kExpandBy = 10; // px
+    return m_enabled && Rect(
+        m_rect.x0() - kExpandBy,
+        m_rect.y0() - kExpandBy,
+        m_rect.x1() + kExpandBy,
+        m_rect.y1() + kExpandBy).contains(point);
+}
+
+const bool PControl::contains(const Vec2& point) const
 {
     return m_enabled && m_rect.contains(point);
 }
@@ -224,7 +234,14 @@ void PSlider::draw(PGraphics& g)
 
 void PSlider::setValueInternal(float value)
 {
+    if (value <= 0) {
+        m_value = 0;
+    } else if (value > 1) {
+        m_value = 1;
+    } else {
     m_value = value;
+    }
+    
     if (auto d = m_ptrDelegate.lock()) {
         d->controlCallback(this);
     }
@@ -238,7 +255,7 @@ void PSlider::mouseDown(MouseEvent *event)
 
 void PSlider::mouseUp(MouseEvent *event)
 {
-    if (contains(event->getPoint())) {
+    if (expandedContains(event->getPoint())) {
         setValueInternal((event->getPoint().x() - m_rect.x0()) / m_rect.getWidth());
     } else {
         m_value = m_previous_value;
@@ -247,7 +264,7 @@ void PSlider::mouseUp(MouseEvent *event)
 
 void PSlider::mouseDrag(MouseEvent *event)
 {
-    if (contains(event->getPoint())) {
+    if (expandedContains(event->getPoint())) {
         setValueInternal((event->getPoint().x() - m_rect.x0()) / m_rect.getWidth());
     } else {
         m_value = m_previous_value;
