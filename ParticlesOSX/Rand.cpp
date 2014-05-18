@@ -33,3 +33,9 @@ float Rand::randFloat(float min, float max)
     std::uniform_real_distribution<> dist(min, max);
     return dist(e2);
 }
+
+int Rand::randInt(int min, int max)
+{
+    std::uniform_int_distribution<> dist(min, max);
+    return dist(e2);
+}

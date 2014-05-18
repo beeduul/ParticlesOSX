@@ -18,6 +18,8 @@ public:
     static float randFloat(float max);
     static float randFloat(float min, float max);
 
+    static int randInt(int min, int max);
+
 private:
     static std::random_device rd;
     static std::mt19937 e2;
