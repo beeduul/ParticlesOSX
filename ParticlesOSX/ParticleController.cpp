@@ -12,12 +12,12 @@
 #include <cmath>
 #include <iostream>
 
-static const GLfloat g_vertex_buffer_data[] = {
-    -0.5f, -0.5f, 0.0f,
-    0.5f, -0.5f, 0.0f,
-    -0.5f, 0.5f, 0.0f,
-    0.5f, 0.5f, 0.0f,
-};
+//static const GLfloat g_vertex_buffer_data[] = {
+//    -0.5f, -0.5f, 0.0f,
+//    0.5f, -0.5f, 0.0f,
+//    -0.5f, 0.5f, 0.0f,
+//    0.5f, 0.5f, 0.0f,
+//};
 
 ParticleController::ParticleController(ParticleApp *appPtr) :
     m_isRecording(false),
@@ -43,20 +43,10 @@ void ParticleController::initialize()
 void ParticleController::controlCallback(const PUI::PControl* control)
 {
     string name = control->getName();
-    cout << "controlCallback '" << name << "'" << endl;
     
 //    if(name == ">>" || name == "<<")
 //    {
 //        m_toggleMenu = true;
-//    } else if (name == "kinect") {
-//        m_params->setb("kinect", !m_params->getb("kinect"));
-//    } else if (name == "kdepth") {
-//        ciUIRangeSlider *rslider = (ciUIRangeSlider *) event->widget;
-//        m_params->setf("kdepthThresholdLo", rslider->getScaledValueLow());
-//        m_params->setf("kdepthThresholdHi", rslider->getScaledValueHigh());
-//        //    } else if (name == "bounce") {
-//        //        m_params->setb("bounce", !m_params->getb("bounce"));
-//        
 //    } else
     if (name == "pulse_rate") {
         m_params->setf(name, ((PUI::PSlider *) control)->getValue());
@@ -65,21 +55,47 @@ void ParticleController::controlCallback(const PUI::PControl* control)
 //        m_params->setf("pulse_amplitude", slider->getScaledValue());
 //        
     } else if (name == "gravity") {
-        m_params->setf(name, ((PUI::PSlider *) control)->getValue());
+        float value = ((PUI::PSlider *) control)->getValue();
+        m_params->setf(name, value);
+        cout << "controlCallback '" << name << "'" << " value: " << value << endl;
     } else if (name == "size") {
-        m_params->setf(name, ((PUI::PSlider *) control)->getValue());
+        float value = ((PUI::PSlider *) control)->getValue();
+        m_params->setf(name, value);
+        cout << "controlCallback '" << name << "'" << " value: " << value << endl;
     } else if (name == "lifespan") {
-        m_params->setf(name, ((PUI::PSlider *) control)->getValue());
+        float value = ((PUI::PSlider *) control)->getValue();
+        m_params->setf(name, value);
+        cout << "controlCallback '" << name << "'" << " value: " << value << endl;
     } else if (name == "density") {
-        m_params->seti(name, ((PUI::PSlider *) control)->getValue());
+        int value = ((PUI::PSlider *) control)->getValue();
+        m_params->seti(name, value);
+        cout << "controlCallback '" << name << "'" << " value: " << value << endl;
     } else if (name == "symmetry") {
-        m_params->seti(name, ((PUI::PSlider *) control)->getValue());
+        int value = ((PUI::PSlider *) control)->getValue();
+        m_params->seti(name, value);
+        cout << "controlCallback '" << name << "'" << " value: " << value << endl;
     } else if (name == "draw_style") {
-        m_params->seti(name, ((PUI::PSlider *) control)->getValue());
+        int value = ((PUI::PSlider *) control)->getValue();
+        m_params->seti(name, value);
+        cout << "controlCallback '" << name << "'" << " value: " << value << endl;
     } else if (name == "noise") {
-        m_params->setf(name, ((PUI::PSlider *) control)->getValue());
+        float value = ((PUI::PSlider *) control)->getValue();
+        m_params->setf(name, value);
+        cout << "controlCallback '" << name << "'" << " value: " << value << endl;
     } else if (name == "velocity") {
-        m_params->setf(name, ((PUI::PSlider *) control)->getValue());
+        float value = ((PUI::PSlider *) control)->getValue();
+        m_params->setf(name, value);
+        cout << "controlCallback '" << name << "'" << " value: " << value << endl;
+    } else if (name == "kthreshold") {
+        m_params->seti(name, ((PUI::PSlider *) control)->getValue());
+    } else if (name == "kdensity") {
+        int value = ((PUI::PSlider *) control)->getValue();
+        m_params->seti(name, value);
+        cout << "controlCallback '" << name << "'" << " value: " << value << endl;
+    } else if (name == "klifespan") {
+        float value = ((PUI::PSlider *) control)->getValue();
+        m_params->setf(name, value);
+        cout << "controlCallback '" << name << "'" << " value: " << value << endl;
     }
     
 }
@@ -159,6 +175,11 @@ void ParticleController::draw()
     drawBuffers();
 }
 
+void ParticleController::emitParticle(const Vec2 &position, const Vec2 &direction)
+{
+    emitParticle(position, direction, getParams());
+}
+
 void ParticleController::emitParticle(const Vec2 &position, const Vec2 &direction, ParamsPtr ptrParams)
 {
     float pAngle = std::atan2(position.y(), position.x());
@@ -168,20 +189,36 @@ void ParticleController::emitParticle(const Vec2 &position, const Vec2 &directio
     ParamsPtr p = getParams();
     int symmetry = p->geti("symmetry");
     float slice = M_PI * 2 / symmetry;
-    
+
+    int num_particles = 1;
+    bool renderParticle = true;
+    int density = getParams()->geti("density");
+
     for (int i = 0; i < symmetry; i++)
     {
-        Vec2 newPos = Vec2(cos(pAngle), sin(pAngle)) * dist;
-        Vec2 newDir = Vec2(cos(vAngle), sin(vAngle)) * direction.length();
-        
-        pAngle += slice;
-        vAngle += slice;
-        
-        int num_particles = getParams()->geti("density");
-
-        if (m_particles.size() + num_particles < kMaxParticles) {
-            for (int i = 0; i < num_particles; i++) {
-                m_particles.push_back(new Particle(newPos, newDir, ptrParams));
+        if (density > 0) {
+            num_particles = density;
+        } else {
+            float chance = 1.0 / -(density - 1);
+            float roll = Rand::randFloat();
+            renderParticle = roll < chance;
+//            cout << "chance: " << chance << ", roll: " << roll << ", render: " << renderParticle << endl;
+        }
+        if (renderParticle) {
+            float cx = std::cos(pAngle);
+            float sx = std::sin(pAngle);
+            Vec2 newPos = Vec2(cx, sx);
+            newPos *= dist;
+            
+            Vec2 newDir = Vec2(cos(vAngle), sin(vAngle)) * direction.length();
+            
+            pAngle += slice;
+            vAngle += slice;
+            
+            if (m_particles.size() + num_particles < kMaxParticles) {
+                for (int i = 0; i < num_particles; i++) {
+                    m_particles.push_back(new Particle(newPos, newDir, ptrParams));
+                }
             }
         }
     }

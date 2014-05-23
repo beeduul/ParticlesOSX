@@ -14,8 +14,11 @@
 
 #include "PUI.h"
 
+#include "MyFreenectDevice.h"
+
 #include <ctime>
 #include <list>
+
 
 #define MAX_SYMMETRY 16
 
@@ -25,12 +28,18 @@ public:
     ~ParticleApp();
 
     bool initialize();
+    bool initializeKinect();
     void initializeShaders();
     void init_gl() {}
+    
+    void shutdownKinect();
+    
     void activate() {};
     void deactivate() {};
     
     void update();
+    void updateKinect();
+    
     void draw();
     void resize(int w, int h);
     
@@ -78,7 +87,10 @@ private:
 
     PUI::PSlider *m_symmetry_slider;
     
-    
+    Freenect::Freenect m_freenect;
+    MyFreenectDevice *m_freenectDevice;
+    static std::vector<uint16_t> m_depthBuffer;
+    static std::vector<uint8_t> m_videoBuffer;
 };
 
 

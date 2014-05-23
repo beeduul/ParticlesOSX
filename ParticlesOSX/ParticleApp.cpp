@@ -15,7 +15,12 @@
 #import <CoreFoundation/CoreFoundation.h>
 #import <CoreFoundation/CFString.h>
 
+#import "libfreenect.h"
+
 ParamsPtr ParticleApp::m_params;
+
+std::vector<uint16_t> ParticleApp::m_depthBuffer(640*480);
+std::vector<uint8_t> ParticleApp::m_videoBuffer(640*480*4);
 
 ParticleApp::ParticleApp() :
     m_initialized(false),
@@ -27,7 +32,18 @@ ParticleApp::~ParticleApp()
 {
     if (m_initialized) {
         delete m_ui_manager;
+        shutdownKinect();
     }
+}
+
+void ParticleApp::shutdownKinect()
+{
+    if (!m_freenectDevice) {
+        return;
+    }
+
+    m_freenectDevice->stopDepth();
+    m_freenectDevice->stopDepth();
 }
 
 // Function
@@ -109,7 +125,9 @@ bool ParticleApp::initialize()
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         GetGLError();
-        
+
+        bool bKinect = initializeKinect();
+
         m_ui_manager = new PUI::PUIManager;
 
         int slider_height = 15;
@@ -142,23 +160,14 @@ bool ParticleApp::initialize()
 
         {
             Color fillColor = Color(255/255.0, 218/255.0, 185/255.0);
-            PUI::PSlider *pSlider = new PUI::PSlider("density", 1, 20, PUI::Rect(Vec2(control_x, control_y), PSize(slider_width, slider_height)));
+            PUI::PSlider *pSlider = new PUI::PSlider("density", -10, 20, PUI::Rect(Vec2(control_x, control_y), PSize(slider_width, slider_height)));
             pSlider->setValue(m_params->geti("density"));
             pSlider->setColors(fillColor, Color::DkGray);
             pSlider->setDelegate(ptrParticleController);
             m_ui_manager->addControl(pSlider);
             control_y += control_spacing_y + slider_height;
         }
-
-        {
-            Color fillColor = Color(255/255.0, 228/255.0, 225/255.0);
-            PUI::PSlider *pSlider = new PUI::PSlider("pulse_rate", 0, 5, PUI::Rect(Vec2(control_x, control_y), PSize(slider_width, slider_height)));
-            pSlider->setValue(m_params->getf("pulse_rate"));
-            pSlider->setColors(fillColor, Color::DkGray);
-            pSlider->setDelegate(ptrParticleController);
-            m_ui_manager->addControl(pSlider);
-            control_y += control_spacing_y + slider_height;
-        }
+        control_y += control_spacing_y;
         
         {
             Color fillColor = Color(0/255.0, 206/255.0, 209/255.0);
@@ -181,7 +190,19 @@ bool ParticleApp::initialize()
 
             m_symmetry_slider = pSlider;
         }
+        control_y += control_spacing_y;
 
+
+        {
+            Color fillColor = Color(255/255.0, 228/255.0, 225/255.0);
+            PUI::PSlider *pSlider = new PUI::PSlider("pulse_rate", 0, 5, PUI::Rect(Vec2(control_x, control_y), PSize(slider_width, slider_height)));
+            pSlider->setValue(m_params->getf("pulse_rate"));
+            pSlider->setColors(fillColor, Color::DkGray);
+            pSlider->setDelegate(ptrParticleController);
+            m_ui_manager->addControl(pSlider);
+            control_y += control_spacing_y + slider_height;
+        }
+        
         {
             Color fillColor = Color(255/255.0, 250/255.0, 250/255.0);
             PUI::PSlider *pSlider = new PUI::PSlider("noise", 0, 1, PUI::Rect(Vec2(control_x, control_y), PSize(slider_width, slider_height)));
@@ -202,23 +223,66 @@ bool ParticleApp::initialize()
             control_y += control_spacing_y + slider_height;
         }
         
+//        {
+//            Color fillColor = Color(255/255.0, 239/255.0, 213/255.0);
+//            PUI::PSlider *pSlider = new PUI::PSlider("draw_style", 0, 2, PUI::Rect(Vec2(control_x, control_y), PSize(slider_width, slider_height)));
+//            pSlider->setValue(m_params->geti("draw_style"));
+//            pSlider->setColors(fillColor, Color::DkGray);
+//            pSlider->setDelegate(ptrParticleController);
+//            m_ui_manager->addControl(pSlider);
+//            control_y += control_spacing_y + slider_height;
+//        }
+//        
+//        {
+//            PUI::PColorWell *pColorWell = new PUI::PColorWell("colorwell", Color::Black, Color::White, PUI::Rect(Vec2(control_x, control_y), PSize(slider_width, slider_height)));
+////            pColorWell->setDelegate
+//            m_ui_manager->addControl(pColorWell);
+//            control_y += control_spacing_y + slider_height;
+//        }
+
+        control_y += control_spacing_y * 2;
+
+        if (bKinect)
         {
-            Color fillColor = Color(255/255.0, 239/255.0, 213/255.0);
-            PUI::PSlider *pSlider = new PUI::PSlider("draw_style", 0, 2, PUI::Rect(Vec2(control_x, control_y), PSize(slider_width, slider_height)));
-            pSlider->setValue(m_params->geti("draw_style"));
-            pSlider->setColors(fillColor, Color::DkGray);
-            pSlider->setDelegate(ptrParticleController);
-            m_ui_manager->addControl(pSlider);
-            control_y += control_spacing_y + slider_height;
+            {
+                Color fillColor = Color::White;
+                PUI::PSlider *pSlider = new PUI::PSlider("kthreshold", 0, 2047, PUI::Rect(Vec2(control_x, control_y), PSize(slider_width, slider_height)));
+                pSlider->setValue(m_params->geti("kthreshold"));
+                pSlider->setColors(fillColor, Color::DkGray);
+                pSlider->setDelegate(ptrParticleController);
+                m_ui_manager->addControl(pSlider);
+                control_y += control_spacing_y + slider_height;
+            }
+
+            {
+                Color fillColor = Color(255/255.0, 218/255.0, 185/255.0);
+                PUI::PSlider *pSlider = new PUI::PSlider("kdensity", -50, 1, PUI::Rect(Vec2(control_x, control_y), PSize(slider_width, slider_height)));
+                pSlider->setValue(m_params->geti("kdensity"));
+                pSlider->setColors(fillColor, Color::DkGray);
+                pSlider->setDelegate(ptrParticleController);
+                m_ui_manager->addControl(pSlider);
+                control_y += control_spacing_y + slider_height;
+            }
+
+            {
+                Color fillColor = Color(152/255.0, 251/255.0, 152/255.0);
+                PUI::PSlider *pSlider = new PUI::PSlider("klifespan", .1, 10, PUI::Rect(Vec2(control_x, control_y), PSize(slider_width, slider_height)));
+                pSlider->setValue(m_params->getf("klifespan"));
+                pSlider->setColors(fillColor, Color::DkGray);
+                pSlider->setDelegate(ptrParticleController);
+                m_ui_manager->addControl(pSlider);
+                control_y += control_spacing_y + slider_height;
+            }
         }
         
-        {
-            PUI::PColorWell *pColorWell = new PUI::PColorWell("colorwell", Color::Black, Color::White, PUI::Rect(Vec2(control_x, control_y), PSize(slider_width, slider_height)));
-//            pColorWell->setDelegate
-            m_ui_manager->addControl(pColorWell);
-            control_y += control_spacing_y + slider_height;
-        }
 
+        Color birthColor(Rand::randFloat(), Rand::randFloat(), Rand::randFloat());
+        Color deathColor = Color(1 - birthColor.r(), 1 - birthColor.g(), 1 - birthColor.b());
+        m_params->setColor("birthColor", birthColor);
+        m_params->setColor("deathColor", deathColor);
+        
+        PtrParticleController activeController = particleControllers.front();
+        activeController->setParams(m_params);
         
     }
     cout << "ParticleApp.initialized " << endl;
@@ -226,6 +290,19 @@ bool ParticleApp::initialize()
     GetGLError();
 
     return m_initialized;
+}
+
+bool ParticleApp::initializeKinect()
+{
+    m_freenectDevice = 0;
+    try {
+        m_freenectDevice = &m_freenect.createDevice<MyFreenectDevice>(0);
+        m_freenectDevice->startVideo();
+        m_freenectDevice->startDepth();
+    } catch (std::runtime_error e) {
+        cout << "WARNING could not initialize Kinect";
+    }
+    return m_freenectDevice != 0;
 }
 
 
@@ -259,6 +336,8 @@ void ParticleApp::update() {
         return;
     }
 
+    updateKinect();
+    
     g_buffer_mutex.lock();
     int numParticles = 0;
     BOOST_FOREACH(PtrParticleController particleController, particleControllers) {
@@ -277,8 +356,68 @@ void ParticleApp::update() {
     
     m_lastAppTime = elapsed;
     m_lastFrameTime = frameTime;
-
+    
     GetGLError();
+
+}
+
+void ParticleApp::updateKinect()
+{
+    if (!m_freenectDevice) {
+        return;
+    }
+    
+    m_freenectDevice->updateState();
+    m_freenectDevice->getRGB(m_videoBuffer);
+    m_freenectDevice->getDepth(m_depthBuffer);
+    
+    PtrParticleController activeController = particleControllers.front();
+    
+    int oldDensity = m_params->geti("density");
+    m_params->seti("density", m_params->geti("kdensity"));
+    
+    float oldLifespan = m_params->getf("lifespan");
+    m_params->setf("lifespan", m_params->getf("klifespan"));
+    
+    Color oldBirthColor = m_params->getColor("birthColor");
+    Color oldDeathColor = m_params->getColor("deathColor");
+    
+    Color kinectBirthColor = m_params->getColor("kinectBirthColor");
+    Color kinectDeathColor = m_params->getColor("kinectDeathColor");
+    
+    int step = 4; // Rand::randInt(4, 32);
+    
+    int skipRate = 2;
+    
+    int threshold = m_params->geti("kthreshold");
+    
+    for (int j = 0; j < 480; j += step) {
+        for (int i = 0; i < 640; i += step) {
+            int offset = j * 640 + (640 - i);
+            int depth = m_depthBuffer[offset];
+            if (depth < threshold) {
+                float x = (i - 320) * (windowSize().x() / (float) 640);
+                float y = (j - 240) * (windowSize().y() / (float) 480);
+                Vec2 position(x, y);
+                int crazy = 5;
+                Vec2 direction(Rand::randFloat(-crazy, crazy), Rand::randFloat(-crazy, crazy));
+                int videoBufferOffset = offset * 4;
+                float colorMagnitude = 1 - (float)depth / threshold;
+                //                Color videoColor(m_videoBuffer[videoBufferOffset], m_videoBuffer[videoBufferOffset + 1], m_videoBuffer[videoBufferOffset + 2]);
+                //                Color pixelColor = (depthColor + videoColor) / 2;
+                m_params->setColor("birthColor", kinectBirthColor * colorMagnitude);
+                m_params->setColor("deathColor", kinectDeathColor * colorMagnitude);
+                activeController->emitParticle(position, direction);
+            }
+        }
+    }
+    
+    m_params->seti("density", oldDensity);
+    m_params->setf("lifespan", oldLifespan);
+
+    m_params->setColor("birthColor", oldBirthColor);
+    m_params->setColor("deathColor", oldDeathColor);
+    
 
 }
 
@@ -290,7 +429,7 @@ void ParticleApp::draw() {
 
     m_shader_program->useProgram();
     
-    Color clearColor(145/255.0, 129/255.0, 81/255.0);
+    Color clearColor(Color::Black);
     glClearColor(clearColor.r(), clearColor.g(), clearColor.b(), clearColor.a());
     GetGLError();
 
@@ -320,11 +459,19 @@ void ParticleApp::resize(int w, int h) {
 void ParticleApp::keyDown(int keyCode, int modifiers)
 {
     switch (keyCode) {
-        case 'c': {
+        case 'C': {
             BOOST_FOREACH(PtrParticleController particleController, particleControllers) {
                 particleController->removeParticles(particleController->numParticles());
             }
         } break;
+        
+        case 'c': {
+            Color birthColor(Rand::randFloat(), Rand::randFloat(), Rand::randFloat());
+            Color deathColor = Color(1 - birthColor.r(), 1 - birthColor.g(), 1 - birthColor.b());
+
+            m_params->setColor("kinectBirthColor", birthColor);
+            m_params->setColor("kinectDeathColor", deathColor);
+        }
             
         case 'f': {
             //            setFullScreen(!isFullScreen());

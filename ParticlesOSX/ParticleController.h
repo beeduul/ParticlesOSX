@@ -37,6 +37,7 @@ public:
     
     int numParticles() const { return (int) m_particles.size(); }
     
+    void emitParticle(const Vec2 &position, const Vec2 &direction);
     void emitParticle(const Vec2 &position, const Vec2 &direction, ParamsPtr ptrParams);
     
     void addParticleAt(const Vec2 &position, const Vec2 &direction, ControlType type);

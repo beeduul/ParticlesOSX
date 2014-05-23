@@ -11,24 +11,26 @@
 
 Params::Params()
 {
-    // kinect params
-    setb("kinect", false);
-    setf("kdepthThresholdLo", .3);
-    setf("kdepthThresholdHi", 1);
-    
-    // TODO deprecate
-    setb("bounce", false);
-    
-    setf("size", 30);
-    setf("lifespan", 10.0);
-    seti("density", 10);
+    setf("size", 20);
+    setf("lifespan", .5);
+    seti("density", 1);
     setf("pulse_rate", 0);
     setf("pulse_amplitude", 1.0);
     seti("symmetry", 1);
     seti("draw_style", 0);
     setf("gravity", 0);
-    setf("noise", .3);
+    setf("noise", 0);
     setf("velocity", .25);
+
+    setColor("birthColor", Color::White);
+    setColor("deathColor", Color::Black);
+
+    // kinect params
+    seti("kthreshold", 0);
+    seti("kdensity", -10);
+    setf("klifespan", 1.0);
+    setColor("kinectBirthColor", Color::Red);
+    setColor("kinectDeathColor", Color(1, .7, .7));
 }
 
 ParamsPtr &Params::get()
