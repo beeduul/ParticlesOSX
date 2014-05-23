@@ -104,7 +104,7 @@ void Particle::update_behavior(const ParticleController &pc)
     float t2 = m_freq * (Clock::getElapsedSeconds() - m_start);
     float swell = (1 + sin(t2)) / 2; //  * m_amp;
     
-    m_current_radius = pc.getParams()->getf("size") * swell; // m_initial_radius * swell;
+    m_current_radius = m_initial_radius * swell; // pc.getParams()->getf("size") * swell;
     switch(stage()) {
         case birth: {
             m_current_radius = m_current_radius * t; // easeOutBack(t); // easeInElastic(t, 5, 3);
