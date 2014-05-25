@@ -14,7 +14,9 @@
 
 #include "PUI.h"
 
+#ifdef USE_KINECT
 #include "MyFreenectDevice.h"
+#endif
 
 #include <ctime>
 #include <list>
@@ -87,10 +89,12 @@ private:
 
     PUI::PSlider *m_symmetry_slider;
     
+#ifdef USE_KINECT
     Freenect::Freenect m_freenect;
     MyFreenectDevice *m_freenectDevice;
     static std::vector<uint16_t> m_depthBuffer;
     static std::vector<uint8_t> m_videoBuffer;
+#endif
 };
 
 

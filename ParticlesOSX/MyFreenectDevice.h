@@ -9,6 +9,8 @@
 #ifndef __ParticlesOSX__MyFreenectDevice__
 #define __ParticlesOSX__MyFreenectDevice__
 
+#ifdef USE_KINECT
+
 #include "libfreenect.hpp"
 
 class Mutex {
@@ -95,6 +97,6 @@ private:
 	bool m_new_depth_frame;
 };
 
-
+#endif
 
 #endif /* defined(__ParticlesOSX__MyFreenectDevice__) */

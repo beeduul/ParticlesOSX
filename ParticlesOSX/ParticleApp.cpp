@@ -15,12 +15,14 @@
 #import <CoreFoundation/CoreFoundation.h>
 #import <CoreFoundation/CFString.h>
 
+#ifdef USE_KINECT
 #import "libfreenect.h"
-
-ParamsPtr ParticleApp::m_params;
 
 std::vector<uint16_t> ParticleApp::m_depthBuffer(640*480);
 std::vector<uint8_t> ParticleApp::m_videoBuffer(640*480*4);
+#endif
+
+ParamsPtr ParticleApp::m_params;
 
 ParticleApp::ParticleApp() :
     m_initialized(false),
@@ -32,10 +34,13 @@ ParticleApp::~ParticleApp()
 {
     if (m_initialized) {
         delete m_ui_manager;
+#ifdef USE_KINECT
         shutdownKinect();
+#endif
     }
 }
 
+#ifdef USE_KINECT
 void ParticleApp::shutdownKinect()
 {
     if (!m_freenectDevice) {
@@ -45,6 +50,7 @@ void ParticleApp::shutdownKinect()
     m_freenectDevice->stopDepth();
     m_freenectDevice->stopDepth();
 }
+#endif
 
 // Function
 void SetCWDToMainBundle()
@@ -126,8 +132,13 @@ bool ParticleApp::initialize()
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         GetGLError();
 
-        bool bKinect = initializeKinect();
-
+        bool bKinect =
+        #ifdef USE_KINECT
+        initializeKinect() ||
+        #endif
+        false;
+        
+        
         m_ui_manager = new PUI::PUIManager;
 
         int slider_height = 15;
@@ -292,6 +303,7 @@ bool ParticleApp::initialize()
     return m_initialized;
 }
 
+#ifdef USE_KINECT
 bool ParticleApp::initializeKinect()
 {
     m_freenectDevice = 0;
@@ -304,6 +316,7 @@ bool ParticleApp::initializeKinect()
     }
     return m_freenectDevice != 0;
 }
+#endif
 
 
 void ParticleApp::initializeShaders()
@@ -336,7 +349,9 @@ void ParticleApp::update() {
         return;
     }
 
+#ifdef USE_KINECT
     updateKinect();
+#endif
     
     g_buffer_mutex.lock();
     int numParticles = 0;
@@ -361,6 +376,7 @@ void ParticleApp::update() {
 
 }
 
+#ifdef USE_KINECT
 void ParticleApp::updateKinect()
 {
     if (!m_freenectDevice) {
@@ -420,6 +436,7 @@ void ParticleApp::updateKinect()
     
 
 }
+#endif
 
 void ParticleApp::draw() {
 
