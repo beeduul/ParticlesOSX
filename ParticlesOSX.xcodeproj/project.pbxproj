@@ -9,12 +9,12 @@
 /* Begin PBXBuildFile section */
 		3F2EBA5C1894272D00FF56DF /* p01.vert in Resources */ = {isa = PBXBuildFile; fileRef = 3F2EBA5B1894272D00FF56DF /* p01.vert */; };
 		3F2EBA5E1894278200FF56DF /* p01.frag in Resources */ = {isa = PBXBuildFile; fileRef = 3F2EBA5D1894278200FF56DF /* p01.frag */; };
+		3F40F4FE193261320045A7D3 /* libfreenect.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F40F4FD193261320045A7D3 /* libfreenect.dylib */; };
 		3F9FECE5189EEA1E00114BA2 /* PUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3F9FECE3189EEA1E00114BA2 /* PUI.cpp */; };
 		3FA7069918A6E60C005E042C /* rect.vert in Sources */ = {isa = PBXBuildFile; fileRef = 3FA7069818A6E60C005E042C /* rect.vert */; };
 		3FA7069B18A6E617005E042C /* rect.frag in Sources */ = {isa = PBXBuildFile; fileRef = 3FA7069A18A6E617005E042C /* rect.frag */; };
 		3FA7069C18A6E998005E042C /* rect.vert in Resources */ = {isa = PBXBuildFile; fileRef = 3FA7069818A6E60C005E042C /* rect.vert */; };
 		3FA7069D18A6E998005E042C /* rect.frag in Resources */ = {isa = PBXBuildFile; fileRef = 3FA7069A18A6E617005E042C /* rect.frag */; };
-		3FB4E57019281C5F00D78E26 /* libfreenect.0.4.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FB4E56F19281C5F00D78E26 /* libfreenect.0.4.1.dylib */; };
 		3FB4E5731928255800D78E26 /* MyFreenectDevice.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3FB4E5711928255800D78E26 /* MyFreenectDevice.cpp */; };
 		3FC30D2E188AFF3900DA490D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FC30D2D188AFF3900DA490D /* Cocoa.framework */; };
 		3FC30D38188AFF3900DA490D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3FC30D36188AFF3900DA490D /* InfoPlist.strings */; };
@@ -60,11 +60,11 @@
 		3F2EBA5B1894272D00FF56DF /* p01.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = p01.vert; path = Shaders/p01.vert; sourceTree = "<group>"; };
 		3F2EBA5D1894278200FF56DF /* p01.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = p01.frag; path = Shaders/p01.frag; sourceTree = "<group>"; };
 		3F2EBA5F1894D46F00FF56DF /* ParticlesOSX-PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ParticlesOSX-PrefixHeader.pch"; sourceTree = "<group>"; };
+		3F40F4FD193261320045A7D3 /* libfreenect.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfreenect.dylib; path = ../../../../usr/local/lib/libfreenect.dylib; sourceTree = "<group>"; };
 		3F9FECE3189EEA1E00114BA2 /* PUI.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PUI.cpp; sourceTree = "<group>"; };
 		3F9FECE4189EEA1E00114BA2 /* PUI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PUI.h; sourceTree = "<group>"; };
 		3FA7069818A6E60C005E042C /* rect.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = rect.vert; path = Shaders/rect.vert; sourceTree = "<group>"; };
 		3FA7069A18A6E617005E042C /* rect.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = rect.frag; sourceTree = "<group>"; };
-		3FB4E56F19281C5F00D78E26 /* libfreenect.0.4.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfreenect.0.4.1.dylib; path = ../../../../usr/local/Cellar/libfreenect/0.4.1/lib/libfreenect.0.4.1.dylib; sourceTree = "<group>"; };
 		3FB4E5711928255800D78E26 /* MyFreenectDevice.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MyFreenectDevice.cpp; sourceTree = "<group>"; };
 		3FB4E5721928255800D78E26 /* MyFreenectDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyFreenectDevice.h; sourceTree = "<group>"; };
 		3FC30D2A188AFF3900DA490D /* ParticlesOSX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ParticlesOSX.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -123,9 +123,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				3FF5AB8B18924CCE00BC067C /* CoreVideo.framework in Frameworks */,
-				3FB4E57019281C5F00D78E26 /* libfreenect.0.4.1.dylib in Frameworks */,
 				3FF5AB8918924BA200BC067C /* QuartzCore.framework in Frameworks */,
 				3FC30D2E188AFF3900DA490D /* Cocoa.framework in Frameworks */,
+				3F40F4FE193261320045A7D3 /* libfreenect.dylib in Frameworks */,
 				3FC30D70188B2B3600DA490D /* GLKit.framework in Frameworks */,
 				3FC30D6B188B0B5600DA490D /* OpenGL.framework in Frameworks */,
 			);
@@ -185,7 +185,7 @@
 		3FC30D2C188AFF3900DA490D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				3FB4E56F19281C5F00D78E26 /* libfreenect.0.4.1.dylib */,
+				3F40F4FD193261320045A7D3 /* libfreenect.dylib */,
 				3FF5AB8A18924CCE00BC067C /* CoreVideo.framework */,
 				3FF5AB8818924BA200BC067C /* QuartzCore.framework */,
 				3FC30D2D188AFF3900DA490D /* Cocoa.framework */,
@@ -550,7 +550,7 @@
 				INFOPLIST_FILE = "ParticlesOSX/ParticlesOSX-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/usr/local/Cellar/libfreenect/0.4.1/lib,
+					/usr/local/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "\"/Volumes/big bad bawdy brawler/dev/boost_1_55_0\"";
@@ -569,7 +569,7 @@
 				INFOPLIST_FILE = "ParticlesOSX/ParticlesOSX-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/usr/local/Cellar/libfreenect/0.4.1/lib,
+					/usr/local/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "\"/Volumes/big bad bawdy brawler/dev/boost_1_55_0\"";
