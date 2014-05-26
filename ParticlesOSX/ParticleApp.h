@@ -19,7 +19,7 @@
 #endif
 
 #include <ctime>
-#include <list>
+#include <array>
 
 
 #define MAX_SYMMETRY 16
@@ -55,6 +55,10 @@ public:
     
     static std::string getFileContents(const char *filename);
     
+    PtrParticleController getActiveController();
+    void setActiveController(int controllerIndex);
+    PtrParticleController getKinectController();
+    
     static ParamsPtr& params() {
         return m_params;
     }
@@ -76,8 +80,10 @@ private:
     
     void addParticleAt(Vec2 position, Vec2 vector, ParticleController::ControlType type);
 
-    std::list<PtrParticleController> particleControllers;
-
+    const static int kNumControllers = 10;
+    std::array<PtrParticleController, kNumControllers> m_particleControllers;
+    PtrParticleController m_activeController;
+    
     float m_lastAppTime;
     float m_lastFrameTime;
 
@@ -85,9 +91,7 @@ private:
     
     static ParamsPtr m_params;
 
-    PUI::PUIManager *m_ui_manager;
-
-    PUI::PSlider *m_symmetry_slider;
+    PUI::PGraphics *m_graphics;
     
 #ifdef USE_KINECT
     Freenect::Freenect m_freenect;

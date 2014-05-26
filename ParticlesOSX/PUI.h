@@ -116,8 +116,6 @@ namespace PUI {
         virtual void controlCallback(const PControl* control) = 0;
     };
     
-    typedef std::shared_ptr<IDelegate> IDelegatePtr;
-    
     class PControl
     {
     protected:
@@ -126,7 +124,7 @@ namespace PUI {
         bool m_enabled;
         bool m_visible;
         
-        std::weak_ptr<IDelegate> m_ptrDelegate;
+        IDelegate *m_delegate;
         
         const bool expandedContains(const Vec2& point);
         
@@ -136,19 +134,19 @@ namespace PUI {
         std::string getName() const { return m_name; }
         const bool contains(const Vec2& point) const;
 
-        void setDelegate(IDelegatePtr ptrDelegate);
+        void setDelegate(IDelegate *delegate);
         
         virtual void draw(PGraphics& graphics) = 0;
 
-        virtual void mouseDown(MouseEvent *event) = 0;
-        virtual void mouseDrag(MouseEvent *event) = 0;
-        virtual void mouseUp(MouseEvent *event) = 0;
+        virtual void mouseDown(MouseEvent &event) = 0;
+        virtual void mouseDrag(MouseEvent &event) = 0;
+        virtual void mouseUp(MouseEvent &event) = 0;
         
-        virtual void mouseEnter(MouseEvent *event) = 0;
-        virtual void mouseMove(MouseEvent *event) = 0;
-        virtual void mouseExit(MouseEvent *event) = 0;
+        virtual void mouseEnter(MouseEvent &event) = 0;
+        virtual void mouseMove(MouseEvent &event) = 0;
+        virtual void mouseExit(MouseEvent &event) = 0;
         
-        virtual void keyDown(KeyEvent *event) = 0;
+        virtual void keyDown(KeyEvent &event) = 0;
     };
     
     class PButton : public PControl
@@ -182,15 +180,15 @@ namespace PUI {
         
         virtual void draw(PGraphics& graphics);
 
-        virtual void mouseDown(MouseEvent *event);
-        virtual void mouseDrag(MouseEvent *event);
-        virtual void mouseUp(MouseEvent *event);
+        virtual void mouseDown(MouseEvent &event);
+        virtual void mouseDrag(MouseEvent &event);
+        virtual void mouseUp(MouseEvent &event);
         
-        virtual void mouseEnter(MouseEvent *event);
-        virtual void mouseMove(MouseEvent *event);
-        virtual void mouseExit(MouseEvent *event);
+        virtual void mouseEnter(MouseEvent &event);
+        virtual void mouseMove(MouseEvent &event);
+        virtual void mouseExit(MouseEvent &event);
 
-        virtual void keyDown(KeyEvent *event);
+        virtual void keyDown(KeyEvent &event);
     };
     
     class PColorWell : public PControl
@@ -212,44 +210,45 @@ namespace PUI {
         
         virtual void draw(PGraphics& graphics);
 
-        virtual void mouseDown(MouseEvent *event);
-        virtual void mouseDrag(MouseEvent *event);
-        virtual void mouseUp(MouseEvent *event);
+        virtual void mouseDown(MouseEvent &event);
+        virtual void mouseDrag(MouseEvent &event);
+        virtual void mouseUp(MouseEvent &event);
         
         // TODO remove requirement
-        virtual void mouseEnter(MouseEvent *event);
-        virtual void mouseMove(MouseEvent *event);
-        virtual void mouseExit(MouseEvent *event);
-        virtual void keyDown(KeyEvent *event);
+        virtual void mouseEnter(MouseEvent &event);
+        virtual void mouseMove(MouseEvent &event);
+        virtual void mouseExit(MouseEvent &event);
+        virtual void keyDown(KeyEvent &event);
 
     };
     
     class PUIManager
     {
     private:
-        PGraphics m_graphics;
 
         std::weak_ptr<PControl *> m_mouse_over_control;
 
         std::weak_ptr<PControl *> m_current_control;
         std::list<std::shared_ptr<PControl *>> m_controls;
         
-        Vec2 m_window_size;
+//        Vec2 m_window_size;
         
     public:
         PUIManager();
         ~PUIManager();
         void addControl(PControl *control);
-
-        bool mouseDown(MouseEvent *event);
-        bool mouseUp(MouseEvent *event);
-        bool mouseDrag(MouseEvent *event);
-
-        void mouseMove(MouseEvent *event);
-
-        void keyDown(KeyEvent *event);
+        void removeControl(PControl *control);
+        void removeControls();
         
-        void draw();
+        bool mouseDown(MouseEvent &event);
+        bool mouseUp(MouseEvent &event);
+        bool mouseDrag(MouseEvent &event);
+
+        void mouseMove(MouseEvent &event);
+
+        void keyDown(KeyEvent &event);
+        
+        void draw(PGraphics &graphics);
         
         void resize(const Vec2& window_size);
     };

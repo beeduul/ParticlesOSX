@@ -28,9 +28,17 @@ public:
     
     ParticleController(ParticleApp *appPtr);
     ~ParticleController();
-    void initialize();
+    void initialize(bool kinect);
     void update();
-    void draw();
+    void draw(PUI::PGraphics &graphics);
+    void drawUI(PUI::PGraphics &graphics);
+    
+    bool mouseDown(PUI::MouseEvent &event);
+    bool mouseDrag(PUI::MouseEvent &event, Vec2 &mouse_vec);
+    bool mouseUp(PUI::MouseEvent &event);
+    void mouseMove(PUI::MouseEvent &event);
+
+    void keyDown(int keyCode, int modifiers);
     
     void setParams(ParamsPtr ptrParams) { m_params = ptrParams; }
     ParamsPtr getParams() const { return m_useGlobalParams ? Params::get() : m_params; }
@@ -49,6 +57,8 @@ public:
     void startRecording();
     void stopRecording();
     bool isRecording();
+    
+    bool isKinect() { return m_kinect; }
     
     // IDelegate implementation
     virtual void controlCallback(const PUI::PControl* control);
@@ -84,6 +94,12 @@ private:
     std::list<Particle *> m_particles;
     
     bool updateRemove(Particle *p);
+    
+    bool m_kinect;
+    
+    PUI::PUIManager *m_ui_manager;
+    PUI::PSlider *m_symmetry_slider;
+    void initializeUI();
     
     // optimized buffer management for particles
 

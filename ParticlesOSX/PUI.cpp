@@ -228,9 +228,9 @@ const bool PControl::contains(const Vec2& point) const
     return m_enabled && m_rect.contains(point);
 }
 
-void PControl::setDelegate(IDelegatePtr ptrDelegate)
+void PControl::setDelegate(IDelegate *delegate)
 {
-    m_ptrDelegate = ptrDelegate;
+    m_delegate = delegate;
 }
 
 PButton::PButton(std::string name, const Rect& rect) :
@@ -282,52 +282,52 @@ void PSlider::setValueInternal(float value)
         m_value = value;
     }
     
-    if (auto d = m_ptrDelegate.lock()) {
-        d->controlCallback(this);
+    if (m_delegate) {
+        m_delegate->controlCallback(this);
     }
 }
 
-void PSlider::mouseDown(MouseEvent *event)
+void PSlider::mouseDown(MouseEvent &event)
 {
     m_previous_value = m_value;
-    setValueInternal((event->getPoint().x() - m_rect.x0()) / m_rect.getWidth());
+    setValueInternal((event.getPoint().x() - m_rect.x0()) / m_rect.getWidth());
 }
 
-void PSlider::mouseUp(MouseEvent *event)
+void PSlider::mouseUp(MouseEvent &event)
 {
-    if (expandedContains(event->getPoint())) {
-        setValueInternal((event->getPoint().x() - m_rect.x0()) / m_rect.getWidth());
+    if (expandedContains(event.getPoint())) {
+        setValueInternal((event.getPoint().x() - m_rect.x0()) / m_rect.getWidth());
     } else {
         m_value = m_previous_value;
     }
 }
 
-void PSlider::mouseDrag(MouseEvent *event)
+void PSlider::mouseDrag(MouseEvent &event)
 {
-    if (expandedContains(event->getPoint())) {
-        setValueInternal((event->getPoint().x() - m_rect.x0()) / m_rect.getWidth());
+    if (expandedContains(event.getPoint())) {
+        setValueInternal((event.getPoint().x() - m_rect.x0()) / m_rect.getWidth());
     } else {
         m_value = m_previous_value;
     }
 }
 
-void PSlider::mouseEnter(MouseEvent *event)
+void PSlider::mouseEnter(MouseEvent &event)
 {
     m_borderColor = Color::White;
 }
 
-void PSlider::mouseMove(MouseEvent *event)
+void PSlider::mouseMove(MouseEvent &event)
 {
     
 }
 
-void PSlider::mouseExit(MouseEvent *event)
+void PSlider::mouseExit(MouseEvent &event)
 {
     m_borderColor = Color::Black;
 }
 
 
-void PSlider::keyDown(KeyEvent *event)
+void PSlider::keyDown(KeyEvent &event)
 {
 }
 
@@ -349,8 +349,8 @@ void PColorWell::setValueInternal(float value)
         m_value = value;
     }
     
-    if (auto d = m_ptrDelegate.lock()) {
-        d->controlCallback(this);
+    if (m_delegate) {
+        m_delegate->controlCallback(this);
     }
 }
 
@@ -365,40 +365,41 @@ void PColorWell::draw(PGraphics& g)
     g.drawStrokedRect(m_rect);
 }
 
-void PColorWell::mouseDown(MouseEvent *event)
+void PColorWell::mouseDown(MouseEvent &event)
 {
     m_previous_value = m_value;
-    setValueInternal((event->getPoint().x() - m_rect.x0()) / m_rect.getWidth());
+    setValueInternal((event.getPoint().x() - m_rect.x0()) / m_rect.getWidth());
 }
 
-void PColorWell::mouseDrag(MouseEvent *event)
+void PColorWell::mouseDrag(MouseEvent &event)
 {
-    if (expandedContains(event->getPoint())) {
-        setValueInternal((event->getPoint().x() - m_rect.x0()) / m_rect.getWidth());
+    if (expandedContains(event.getPoint())) {
+        setValueInternal((event.getPoint().x() - m_rect.x0()) / m_rect.getWidth());
     } else {
         m_value = m_previous_value;
     }
 }
 
-void PColorWell::mouseUp(MouseEvent *event)
+void PColorWell::mouseUp(MouseEvent &event)
 {
-    if (expandedContains(event->getPoint())) {
-        setValueInternal((event->getPoint().x() - m_rect.x0()) / m_rect.getWidth());
+    if (expandedContains(event.getPoint())) {
+        setValueInternal((event.getPoint().x() - m_rect.x0()) / m_rect.getWidth());
     } else {
         m_value = m_previous_value;
     }
 }
 
-void PColorWell::mouseEnter(MouseEvent *event) { }
-void PColorWell::mouseMove(MouseEvent *event) { }
-void PColorWell::mouseExit(MouseEvent *event) { }
-void PColorWell::keyDown(KeyEvent *event) { }
+void PColorWell::mouseEnter(MouseEvent &event) { }
+void PColorWell::mouseMove(MouseEvent &event) { }
+void PColorWell::mouseExit(MouseEvent &event) { }
+void PColorWell::keyDown(KeyEvent &event) { }
 
 
 // PUI
 
 PUIManager::PUIManager()
 {
+    m_controls.clear();
 }
 
 PUIManager::~PUIManager()
@@ -411,12 +412,29 @@ void PUIManager::addControl(PControl *control)
     m_controls.push_back(c);
 }
 
-bool PUIManager::mouseDown(MouseEvent *event)
+void PUIManager::removeControl(PControl *remove)
+{
+    BOOST_FOREACH(std::shared_ptr<PControl *> control, m_controls)
+    {
+        if (*control == remove) {
+            m_controls.remove(control);
+            return;
+        }
+    }
+}
+
+void PUIManager::removeControls()
+{
+    m_controls.clear();
+}
+
+
+bool PUIManager::mouseDown(MouseEvent &event)
 {
 //    cout << "PUIManager::mouseDown " << event->getPoint().x() << ", " << event->getPoint().y() << endl;
     BOOST_FOREACH(std::shared_ptr<PControl *> control, m_controls)
     {
-        if ((*control)->contains(event->getPoint())) {
+        if ((*control)->contains(event.getPoint())) {
             m_current_control = control;
             if (auto c = m_current_control.lock()) {
                 (*c)->mouseDown(event);
@@ -427,7 +445,7 @@ bool PUIManager::mouseDown(MouseEvent *event)
     return false;
 }
 
-bool PUIManager::mouseUp(MouseEvent *event)
+bool PUIManager::mouseUp(MouseEvent &event)
 {
 //    cout << "PUIManager::mouseUp " << event->getPoint().x() << ", " << event->getPoint().y() << endl;
 
@@ -440,7 +458,7 @@ bool PUIManager::mouseUp(MouseEvent *event)
     return false;
 }
 
-bool PUIManager::mouseDrag(MouseEvent *event)
+bool PUIManager::mouseDrag(MouseEvent &event)
 {
 //    cout << "PUIManager::mouseDrag " << event->getPoint().x() << ", " << event->getPoint().y() << endl;
 
@@ -452,7 +470,7 @@ bool PUIManager::mouseDrag(MouseEvent *event)
     return false;
 }
 
-void PUIManager::mouseMove(MouseEvent *event)
+void PUIManager::mouseMove(MouseEvent &event)
 {
 //    cout << "PUIManager::mouseMove " << event->getPoint().x() << ", " << event->getPoint().y() << endl;
     
@@ -462,7 +480,7 @@ void PUIManager::mouseMove(MouseEvent *event)
         
         BOOST_FOREACH(std::shared_ptr<PControl *> control, m_controls)
         {
-            if ((*control)->contains(event->getPoint())) {
+            if ((*control)->contains(event.getPoint())) {
                 c = control;
                 break;
             }
@@ -488,24 +506,23 @@ void PUIManager::mouseMove(MouseEvent *event)
     }
 }
 
-void PUIManager::keyDown(KeyEvent *event)
+void PUIManager::keyDown(KeyEvent &event)
 {
     if (auto c = m_current_control.lock()) {
         (*c)->keyDown(event);
     }
 }
 
-void PUIManager::draw()
+void PUIManager::draw(PGraphics &graphics)
 {
     BOOST_FOREACH(std::shared_ptr<PControl *> control, m_controls)
     {
-        (*control)->draw(m_graphics);
+        (*control)->draw(graphics);
     }
     
 }
 
 void PUIManager::resize(const Vec2 &window_size)
 {
-    m_window_size = window_size;
-    m_graphics.resize(window_size);
+//    m_window_size = window_size;
 }
