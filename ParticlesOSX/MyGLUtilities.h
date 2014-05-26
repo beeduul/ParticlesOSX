@@ -20,6 +20,7 @@
             << " set in File:" << __FILE__ << " Line: " \
             << __LINE__ << std::endl;                   \
         err = glGetError();								\
+        throw err;                                      \
         }												\
 }
 
