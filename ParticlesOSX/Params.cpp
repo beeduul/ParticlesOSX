@@ -19,7 +19,7 @@ Params::Params()
     seti("symmetry", 1);
     seti("draw_style", 0);
     setf("gravity", 0);
-    setf("noise", 0);
+    setf("noise", 0.1);
     setf("velocity", .25);
 
     setColor("birthColor", Color::White);
