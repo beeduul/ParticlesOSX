@@ -12,6 +12,8 @@
 #include <cmath>
 #include <iostream>
 
+#include <boost/thread/lock_guard.hpp>
+
 //static const GLfloat g_vertex_buffer_data[] = {
 //    -0.5f, -0.5f, 0.0f,
 //    0.5f, -0.5f, 0.0f,
@@ -412,6 +414,7 @@ void ParticleController::update()
     }
     
     // remove dead particles
+    lock_guard<mutex> guard(m_mutex);
     list<Particle *>::iterator dead = remove_if(m_particles.begin(), m_particles.end(), bind1st(mem_fun(&ParticleController::updateRemove), this));
     m_particles.erase(dead, m_particles.end());
 
@@ -479,6 +482,7 @@ void ParticleController::emitParticle(const Vec2 &position, const Vec2 &directio
             pAngle += slice;
             vAngle += slice;
             
+            lock_guard<mutex> guard(m_mutex);
             if (m_particles.size() + num_particles < kMaxParticles) {
                 for (int i = 0; i < num_particles; i++) {
                     m_particles.push_back(new Particle(newPos, newDir, *this));
@@ -502,6 +506,7 @@ void ParticleController::addParticleAt(const Vec2 &position, const Vec2 &directi
 
 void ParticleController::removeParticles( int amt )
 {
+    lock_guard<mutex> guard(m_mutex);
     list<Particle *>::iterator p = m_particles.begin();
     while (p != m_particles.end() && amt > 0) {
         if ((*p)->stage() != Particle::Stage::dying) {
@@ -514,6 +519,7 @@ void ParticleController::removeParticles( int amt )
 
 void ParticleController::moveParticles(const Vec2 &offset)
 {
+    lock_guard<mutex> guard(m_mutex);
     for(list<Particle *>::iterator p = m_particles.begin(); p != m_particles.end(); p++)
     {
         (*p)->loc((*p)->loc() + offset);
@@ -611,6 +617,8 @@ void ParticleController::drawBuffers()
         std::cerr << "Couldn't find uniform viewSize" << std::endl;
     }
 
+    lock_guard<mutex> guard(m_mutex);
+    
     int nParticles = numParticles();
     
     if (nParticles == 0) {

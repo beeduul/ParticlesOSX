@@ -17,6 +17,7 @@
 
 #include <list>
 #include <array>
+#include <mutex>
 
 class ParticleApp;
 
@@ -69,6 +70,8 @@ public:
 private:
 
     ParticleApp *m_appPtr;
+    
+    mutex m_mutex;
     
     struct Recording {
         Recording(Vec2 p, Vec2 d, ControlType ty, float t) {

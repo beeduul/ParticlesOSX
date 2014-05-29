@@ -18,6 +18,12 @@
 #include "MyFreenectDevice.h"
 #endif
 
+#define USE_LEAP
+
+#ifdef USE_LEAP
+#include "MyLeap.h"
+#endif
+
 #include <ctime>
 #include <array>
 
@@ -111,6 +117,12 @@ private:
     static std::vector<uint16_t> m_depthBuffer;
     static std::vector<uint8_t> m_videoBuffer;
 #endif
+    
+#ifdef USE_LEAP
+    MyLeapListener m_leapListener;
+    Leap::Controller m_leapController;
+#endif
+    
 };
 
 

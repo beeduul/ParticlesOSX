@@ -36,10 +36,18 @@ ParticleApp::ParticleApp() :
 ParticleApp::~ParticleApp()
 {
     if (m_initialized) {
+
+#ifdef USE_LEAP
+        // Remove the listener when done
+        m_leapController.removeListener(m_leapListener);
+#endif
+
         delete m_graphics;
+
 #ifdef USE_KINECT
         shutdownKinect();
 #endif
+        
     }
 }
 
@@ -127,12 +135,22 @@ bool ParticleApp::initialize()
             #endif
             false;
 
+        #ifdef USE_LEAP
+        // Have the listener receive events from the controller
+        m_leapController.addListener(m_leapListener);
+        #endif
+        
         PtrParticleController controller;
         for (int controllerIndex = 0; controllerIndex < m_particleControllers.size(); controllerIndex++) {
             controller = PtrParticleController(new ParticleController(this));
             controller->initialize(kinect && controllerIndex == 0);
 //            ptrParticleController->setParams(m_params);
             m_particleControllers[controllerIndex] = controller;
+#ifdef USE_LEAP
+            if (controllerIndex == 9) {
+                m_leapListener.addParticleController(controller);
+            }
+#endif
         }
         setActiveController(1);
 
