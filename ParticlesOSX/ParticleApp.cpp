@@ -336,8 +336,9 @@ void ParticleApp::resize(int w, int h) {
     cout << "resize " << w << " x " << h << endl;
 }
 
-void ParticleApp::keyDown(int keyCode, int modifiers)
+void ParticleApp::keyDown(int keyCode, PKeyModifier modifiers)
 {
+    cout << "keyCode " << keyCode << ", modifiers: " << modifiers << endl;
     switch (keyCode) {
         case '0':
         case '1':
@@ -365,7 +366,7 @@ void ParticleApp::keyDown(int keyCode, int modifiers)
     }
 }
 
-void ParticleApp::keyUp(int keyCode, int modifiers)
+void ParticleApp::keyUp(int keyCode, PKeyModifier modifiers)
 {
     switch (keyCode) {
         case 'r': {

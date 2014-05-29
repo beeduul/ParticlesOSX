@@ -311,28 +311,47 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink,
 
 - (void)keyDown:(NSEvent *)theEvent {
     int key;
-    int modifiers;
+
 //    decipherKeyEvent(theEvent, key, modifiers);
     
     NSString *keyCharacters = [theEvent charactersIgnoringModifiers];
     for (int i = 0; i < [keyCharacters length]; i++) {
         unichar c = [keyCharacters characterAtIndex: i];
-        app.keyDown(c, modifiers);
+        app.keyDown(c, [self modifiers]);
     }
 }
 
 - (void)keyUp:(NSEvent *)theEvent {
     int key;
-    int modifiers;
+
 //    decipherKeyEvent(theEvent, key, modifiers);
 
     NSString *keyCharacters = [theEvent charactersIgnoringModifiers];
     for (int i = 0; i < [keyCharacters length]; i++) {
         unichar c = [keyCharacters characterAtIndex: i];
-        app.keyUp(c, modifiers);
+        app.keyUp(c, [self modifiers]);
     }
     
 }
+
+- (PKeyModifier) modifiers
+{
+    NSUInteger nsModifiers = [NSEvent modifierFlags];
+    PKeyModifier mods = 0;
+    if (nsModifiers & NSAlphaShiftKeyMask)
+        mods |= KeyModifiers_CapsLock;
+    if (nsModifiers & NSShiftKeyMask)
+        mods |= KeyModifiers_Shift;
+    if (nsModifiers & NSControlKeyMask)
+        mods |= KeyModifiers_Control;
+    if (nsModifiers & NSAlternateKeyMask)
+        mods |= KeyModifiers_Alt;
+    if (nsModifiers & NSCommandKeyMask)
+        mods |= KeyModifiers_Command;
+
+    return mods;
+}
+
 
 - (NSPoint)convertToAppCoordinateSystem:(NSPoint)thePoint {
     // Get the view size in Points

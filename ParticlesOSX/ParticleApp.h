@@ -24,6 +24,14 @@
 
 #define MAX_SYMMETRY 16
 
+typedef unsigned long PKeyModifier;
+const PKeyModifier KeyModifiers_CapsLock  = 1 << 16;
+const PKeyModifier KeyModifiers_Shift     = 1 << 17;
+const PKeyModifier KeyModifiers_Control   = 1 << 18;
+const PKeyModifier KeyModifiers_Alt       = 1 << 19;
+const PKeyModifier KeyModifiers_Command   = 1 << 20;
+//const PKeyModifier KeyModifiers_NumPad    = 1 << 21;
+
 class ParticleApp {
 public:
     ParticleApp();
@@ -45,8 +53,8 @@ public:
     void draw();
     void resize(int w, int h);
     
-    void keyDown(int keyCode, int modifiers);
-    void keyUp(int keyCode, int modifiers);
+    void keyDown(int keyCode, PKeyModifier modifiers);
+    void keyUp(int keyCode, PKeyModifier modifiers);
     
     void mouseDownAt(int x, int y);
     void mouseDraggedAt(int x, int y);
