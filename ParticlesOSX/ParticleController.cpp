@@ -61,7 +61,7 @@ void ParticleController::initializeUI()
     
     {
         Color fillColor = Color(255/255.0, 99/255.0, 71/255.0);
-        PUI::PSlider *pSlider = new PUI::PSlider("size", 1, 30, PUI::Rect(Vec2(control_x, control_y), PSize(slider_width, slider_height)));
+        PUI::PSlider *pSlider = new PUI::PSlider("size", 1, 100, PUI::Rect(Vec2(control_x, control_y), PSize(slider_width, slider_height)));
         pSlider->setValue(m_params->getf("size"));
         pSlider->setColors(fillColor, Color::DkGray);
         pSlider->setDelegate(this);
