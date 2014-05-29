@@ -86,8 +86,9 @@ void Particle::initialize(const Vec2 &location, const Vec2 &direction, float vel
         m_gravity = Vec2(0, 1);
     } else {
 //        Vec2 center(ci::app::getWindowWidth()/2, ci::app::getWindowHeight()/2);
-//        m_gravity = Vec2(center - m_loc).normalized();
-        m_gravity = Vec2(0, 1);
+        Vec2 v(pc.getSymmetryPoint() - m_loc);
+        m_gravity = v / v.length();
+//        m_gravity = Vec2(0, 1);
     }
     float gravity = ptrParams->getf("gravity");
     m_gravity *= gravity;
