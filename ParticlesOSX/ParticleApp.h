@@ -55,12 +55,15 @@ public:
     
     void keyDown(int keyCode, PKeyModifier modifiers);
     void keyUp(int keyCode, PKeyModifier modifiers);
-    
+
     void mouseDownAt(int x, int y);
     void mouseDraggedAt(int x, int y);
     void mouseUpAt(int x, int y);
     void mouseMovedAt(int x, int y);
     
+    const Vec2 mousePosition() const;
+    const Vec2 canvasPosition() const;
+    const Vec2 worldToView(const Vec2 &vec) const;
     static std::string getFileContents(const char *filename);
     
     PtrParticleController getActiveController();
@@ -70,11 +73,11 @@ public:
     static ParamsPtr& params() {
         return m_params;
     }
-
+    
     enum { kShaderParticles, kShaderSimple };
     static ShaderProgramPtr getShaderProgram(int program_index) { return m_shader_programs[program_index]; }
     
-    Vec2 windowSize() { return m_window_size; }
+    const Vec2 windowSize() const { return m_window_size; }
 
 private:
     bool m_initialized;

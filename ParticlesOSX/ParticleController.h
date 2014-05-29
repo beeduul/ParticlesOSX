@@ -43,6 +43,8 @@ public:
     void setParams(ParamsPtr ptrParams) { m_params = ptrParams; }
     ParamsPtr getParams() const { return m_useGlobalParams ? Params::get() : m_params; }
     
+    const Vec2 getSymmetryPoint() const { return m_symmetry_center; }
+    
     int numParticles() const { return (int) m_particles.size(); }
     
     void emitParticle(const Vec2 &position, const Vec2 &direction);
@@ -99,6 +101,7 @@ private:
     
     PUI::PUIManager *m_ui_manager;
     PUI::PSlider *m_symmetry_slider;
+    Vec2 m_symmetry_center;
     void initializeUI();
     
     // optimized buffer management for particles

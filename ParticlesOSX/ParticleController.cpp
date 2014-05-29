@@ -41,6 +41,7 @@ void ParticleController::initialize(bool kinect)
     m_kinect = kinect;
     
     m_params = ParamsPtr(new Params());
+    m_symmetry_center = Vec2(0, 0);
 
     initializeUI();
     
@@ -275,7 +276,7 @@ bool ParticleController::mouseDown(PUI::MouseEvent &event)
         
         setParams(m_params);
         
-        Vec2 canvasPosition(event.getPoint().x() - m_appPtr->windowSize().x() / 2, event.getPoint().y() - m_appPtr->windowSize().y() / 2);
+        Vec2 canvasPosition(m_appPtr->worldToView(event.getPoint()));
         addParticleAt(canvasPosition, Vec2(0, 0), ParticleController::eMouseDown);
     }
     return down;
@@ -286,7 +287,7 @@ bool ParticleController::mouseDrag(PUI::MouseEvent &event, Vec2 &mouse_vec)
     bool down = m_ui_manager->mouseDrag(event);
     if (!down)
     {
-        Vec2 canvasPosition(event.getPoint().x() - m_appPtr->windowSize().x() / 2, event.getPoint().y() - m_appPtr->windowSize().y() / 2);
+        Vec2 canvasPosition(m_appPtr->worldToView(event.getPoint()));
         addParticleAt(canvasPosition, mouse_vec * m_params->getf("velocity"), ParticleController::eMouseDrag);
     }
     return down;
@@ -335,6 +336,9 @@ void ParticleController::keyDown(int keyCode, int modifiers)
         } break;
             
         case 's': {
+            if (modifiers == KeyModifiers_Control) {
+                m_symmetry_center = m_appPtr->canvasPosition();
+            } else {
             int symmetry = m_params->geti("symmetry");
             symmetry++;
             if (symmetry > MAX_SYMMETRY) {
@@ -342,6 +346,7 @@ void ParticleController::keyDown(int keyCode, int modifiers)
             }
             m_params->seti("symmetry", symmetry);
             m_symmetry_slider->setValue(symmetry);
+            }
         } break;
             
         case 'r': {
@@ -440,12 +445,12 @@ void ParticleController::emitParticle(const Vec2 &position, const Vec2 &directio
 
 void ParticleController::emitParticle(const Vec2 &position, const Vec2 &direction, ParamsPtr ptrParams)
 {
-    float pAngle = std::atan2(position.y(), position.x());
-    float dist = position.length();
+    Vec2 p = position - m_symmetry_center;
+    float pAngle = std::atan2(p.y(), p.x());
+    float dist = p.length();
     
     float vAngle = std::atan2(direction.y(), direction.x());
-    ParamsPtr p = getParams();
-    int symmetry = p->geti("symmetry");
+    int symmetry = getParams()->geti("symmetry");
     float slice = M_PI * 2 / symmetry;
 
     int num_particles = 1;
@@ -467,6 +472,7 @@ void ParticleController::emitParticle(const Vec2 &position, const Vec2 &directio
             float sx = std::sin(pAngle);
             Vec2 newPos = Vec2(cx, sx);
             newPos *= dist;
+            newPos += m_symmetry_center;
             
             Vec2 newDir = Vec2(cos(vAngle), sin(vAngle)) * direction.length();
             

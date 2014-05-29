@@ -178,7 +178,7 @@ void ParticleApp::initializeShaders()
     bool ok;
     string vertex_shader_source;
     string fragment_shader_source;
-
+    
     m_shader_programs.reserve(2);
     
     m_shader_programs[kShaderParticles] = ShaderProgramPtr(new ShaderProgram);
@@ -188,7 +188,7 @@ void ParticleApp::initializeShaders()
     if (!ok) {
         cerr << "PROGRAM LINK ERROR kShaderParticles" << endl;
     }
-    
+
     m_shader_programs[kShaderSimple] = ShaderProgramPtr(new ShaderProgram);
     vertex_shader_source = getFileContents("rect.vert");
     fragment_shader_source = getFileContents("rect.frag");
@@ -412,6 +412,25 @@ void ParticleApp::mouseMovedAt(int x, int y)
 //    const Vec2& lastCursorPosition = m_recentCursorPositions.back();
 //    Vec2 mouse_vec = (mouse_pos - lastCursorPosition) / m_recentCursorPositions.size();
     getActiveController()->mouseMove(event);
+}
+
+const Vec2 ParticleApp::mousePosition() const
+{
+    if (m_recentCursorPositions.size() > 0) {
+        return m_recentCursorPositions.front();
+    } else {
+        return Vec2(0, 0);
+    }
+}
+
+const Vec2 ParticleApp::canvasPosition() const
+{
+    return worldToView(mousePosition());
+}
+
+const Vec2 ParticleApp::worldToView(const Vec2 &vec) const
+{
+    return Vec2(vec - windowSize() / 2);
 }
 
 void ParticleApp::addParticleAt(Vec2 position, Vec2 vector, ParticleController::ControlType type)
