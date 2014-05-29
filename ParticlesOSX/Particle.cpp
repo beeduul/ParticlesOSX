@@ -16,13 +16,13 @@
 
 std::vector<GLfloat *> Particle::m_vec_circle_verts;
 
-Particle::Particle(const Vec2 &location, const Vec2 &direction, ParamsPtr ptrParams)
+Particle::Particle(const Vec2 &location, const Vec2 &direction, const ParticleController &pc)
 {
     initialize(
                location,
                direction,
                Rand::randFloat(1),
-               ptrParams
+               pc
                );
 }
 Particle::~Particle() {
@@ -49,8 +49,9 @@ bool Particle::update(const ParticleController &pc)
     return m_stage != dead;
 }
 
-void Particle::initialize(const Vec2 &location, const Vec2 &direction, float velocity, ParamsPtr ptrParams)
+void Particle::initialize(const Vec2 &location, const Vec2 &direction, float velocity, const ParticleController &pc)
 {
+    ParamsPtr ptrParams = pc.getParams();
     m_stage = Stage::birth;
     m_stage_started_at = Clock::getElapsedSeconds();
     

@@ -20,7 +20,7 @@ class ParticleController;
 class Particle {
 public:
 
-    Particle(const Vec2 &loc, const Vec2 &vec, ParamsPtr ptrParams);
+    Particle(const Vec2 &loc, const Vec2 &vec, const ParticleController &pc);
     virtual ~Particle();
 
     virtual void kill();
@@ -58,7 +58,7 @@ private:
     float m_stage_started_at;
 
     // methods
-    void initialize(const Vec2 &location, const Vec2 &direction, float velocity, ParamsPtr ptrParams);
+    void initialize(const Vec2 &location, const Vec2 &direction, float velocity, const ParticleController &pc);
     void update_lifecycle();
     Color getColor(Stage stage, float t);
 

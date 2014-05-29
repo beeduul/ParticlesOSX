@@ -475,7 +475,7 @@ void ParticleController::emitParticle(const Vec2 &position, const Vec2 &directio
             
             if (m_particles.size() + num_particles < kMaxParticles) {
                 for (int i = 0; i < num_particles; i++) {
-                    m_particles.push_back(new Particle(newPos, newDir, ptrParams));
+                    m_particles.push_back(new Particle(newPos, newDir, *this));
                 }
             }
         }
