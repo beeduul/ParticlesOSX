@@ -23,6 +23,8 @@ std::vector<uint16_t> ParticleApp::m_depthBuffer(640*480);
 std::vector<uint8_t> ParticleApp::m_videoBuffer(640*480*4);
 #endif
 
+std::vector<ShaderProgramPtr> ParticleApp::m_shader_programs;
+
 ParamsPtr ParticleApp::m_params;
 
 ParticleApp::ParticleApp() :
@@ -173,26 +175,29 @@ bool ParticleApp::initializeKinect()
 
 void ParticleApp::initializeShaders()
 {
-    m_shader_program = ShaderProgramPtr(new ShaderProgram);
-    
-    string vertex_shader_source = getFileContents("p01.vert");
-    string fragment_shader_source = getFileContents("p01.frag");
-
-    int step = 0;
-    
     bool ok;
-    ok = m_shader_program->initialize(vertex_shader_source, fragment_shader_source);
+    string vertex_shader_source;
+    string fragment_shader_source;
+
+    m_shader_programs.reserve(2);
+    
+    m_shader_programs[kShaderParticles] = ShaderProgramPtr(new ShaderProgram);
+    vertex_shader_source = getFileContents("p01.vert");
+    fragment_shader_source = getFileContents("p01.frag");
+    ok = m_shader_programs[kShaderParticles]->initialize(vertex_shader_source, fragment_shader_source);
     if (!ok) {
-        cerr << "PROGRAM LINK ERROR" << endl;
+        cerr << "PROGRAM LINK ERROR kShaderParticles" << endl;
     }
     
-    cout << "ParticleController.initializeShaders " << step++ << endl;;
-    GetGLError();
+    m_shader_programs[kShaderSimple] = ShaderProgramPtr(new ShaderProgram);
+    vertex_shader_source = getFileContents("rect.vert");
+    fragment_shader_source = getFileContents("rect.frag");
+    ok = m_shader_programs[kShaderSimple]->initialize(vertex_shader_source, fragment_shader_source);
+    if (!ok) {
+        cerr << "PROGRAM LINK ERROR kShaderSimple" << endl;
+    }
     
-    m_shader_program->useProgram();
-    cout << "ParticleController.initializeShaders " << step++ << endl;;
     GetGLError();
-    
 }
 
 void ParticleApp::update() {
@@ -296,18 +301,7 @@ void ParticleApp::draw() {
         return;
     }
 
-    m_shader_program->useProgram();
-
-    GLint location = glGetUniformLocation(m_shader_program->id(), "viewSize");
-    GetGLError();
-    if (location >= 0) {
-        Vec2 size = windowSize();
-        glUniform2i(location, (int) size.x(), (int) size.y());
-        GetGLError();
-    } else {
-        std::cerr << "Couldn't find uniform viewSize" << std::endl;
-    }
-    
+    ShaderProgramPtr shader_program = ParticleApp::getShaderProgram(ParticleApp::kShaderSimple);
 
     Color clearColor(Color::Black);
     glClearColor(clearColor.r(), clearColor.g(), clearColor.b(), clearColor.a());

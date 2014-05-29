@@ -87,8 +87,6 @@ namespace PUI {
         
         std::vector<Line> m_vec_lines;
 
-        ShaderProgramPtr m_shader_program;
-
         Vec2 m_clip_size; // TODO clip_rect?
         
         Color m_color;

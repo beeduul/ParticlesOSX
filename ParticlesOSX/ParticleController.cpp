@@ -593,6 +593,18 @@ void ParticleController::createBuffers()
 
 void ParticleController::drawBuffers()
 {
+    ShaderProgramPtr shader_program = ParticleApp::getShaderProgram(ParticleApp::kShaderParticles);
+    shader_program->useProgram();
+    GLint location = glGetUniformLocation(shader_program->id(), "viewSize");
+    GetGLError();
+    if (location >= 0) {
+        Vec2 size = m_appPtr->windowSize();
+        glUniform2i(location, (int) size.x(), (int) size.y());
+        GetGLError();
+    } else {
+        std::cerr << "Couldn't find uniform viewSize" << std::endl;
+    }
+
     int nParticles = numParticles();
     
     if (nParticles == 0) {

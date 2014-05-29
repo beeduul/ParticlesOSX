@@ -71,19 +71,6 @@ PGraphics::PGraphics()
     
     GetGLError();
     
-    m_shader_program = ShaderProgramPtr(new ShaderProgram);
-    
-    string vertex_shader_source = ParticleApp::getFileContents("rect.vert");
-    string fragment_shader_source = ParticleApp::getFileContents("rect.frag");
-    
-    bool ok;
-    ok = m_shader_program->initialize(vertex_shader_source, fragment_shader_source);
-    if (!ok) {
-        cerr << "PROGRAM LINK ERROR" << endl;
-    }
-
-    GetGLError();
-
 }
 
 PGraphics::~PGraphics()
@@ -127,8 +114,9 @@ void PGraphics::drawStrokedRect(const Rect &rect)
 
     glBindVertexArray(m_vao_id);
 
-    m_shader_program->useProgram();
-    m_shader_program->setUniform2f("viewSize", m_clip_size.x(), m_clip_size.y());
+    ShaderProgramPtr shader_program = ParticleApp::getShaderProgram(ParticleApp::kShaderSimple);
+    shader_program->useProgram();
+    shader_program->setUniform2f("viewSize", m_clip_size.x(), m_clip_size.y());
     glDrawArrays(GL_LINE_LOOP, 0, 4);
     
     GetGLError();
@@ -160,8 +148,9 @@ void PGraphics::drawRect(const Rect &rect)
     
     glBindVertexArray(m_vao_id);
     
-    m_shader_program->useProgram();
-    m_shader_program->setUniform2f("viewSize", m_clip_size.x(), m_clip_size.y()); // TODO
+    ShaderProgramPtr shader_program = ParticleApp::getShaderProgram(ParticleApp::kShaderSimple);
+    shader_program->useProgram();
+    shader_program->setUniform2f("viewSize", m_clip_size.x(), m_clip_size.y()); // TODO
 
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
@@ -172,8 +161,9 @@ void PGraphics::drawRect(const Rect &rect)
 void PGraphics::drawRectGradient(const PUI::Rect &rect, const Color &color0, const Color &color1)
 {
     glBindVertexArray(m_vao_id);
-    m_shader_program->useProgram();
-    m_shader_program->setUniform2f("viewSize", m_clip_size.x(), m_clip_size.y()); // TODO
+    ShaderProgramPtr shader_program = ParticleApp::getShaderProgram(ParticleApp::kShaderSimple);
+    shader_program->useProgram();
+    shader_program->setUniform2f("viewSize", m_clip_size.x(), m_clip_size.y()); // TODO
     
     Vec2 points[4];
     points[0] = rect.getTopLeft();

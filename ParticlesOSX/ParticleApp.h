@@ -71,14 +71,15 @@ public:
         return m_params;
     }
 
-    ShaderProgramPtr shaderProgram() { return m_shader_program; }
+    enum { kShaderParticles, kShaderSimple };
+    static ShaderProgramPtr getShaderProgram(int program_index) { return m_shader_programs[program_index]; }
     
     Vec2 windowSize() { return m_window_size; }
 
 private:
     bool m_initialized;
 
-    ShaderProgramPtr m_shader_program;
+    static std::vector<ShaderProgramPtr> m_shader_programs;
     
     // high sample rate of mouse movements combined with integer-precision mouse positions create sharp particle movement vectors.  sampling older mouse positions helps with this.
     const int kCursorPositionVectorMaxLength = 4;
