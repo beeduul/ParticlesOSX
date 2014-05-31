@@ -12,7 +12,7 @@
 Params::Params()
 {
     setf("size", 20);
-    setf("lifespan", .5);
+    setf("lifespan", 1);
     seti("density", 1);
     setf("pulse_rate", 0);
     setf("pulse_amplitude", 1.0);
