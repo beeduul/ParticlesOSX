@@ -10,6 +10,8 @@
 		3F2EBA5C1894272D00FF56DF /* p01.vert in Resources */ = {isa = PBXBuildFile; fileRef = 3F2EBA5B1894272D00FF56DF /* p01.vert */; };
 		3F2EBA5E1894278200FF56DF /* p01.frag in Resources */ = {isa = PBXBuildFile; fileRef = 3F2EBA5D1894278200FF56DF /* p01.frag */; };
 		3F40F4FE193261320045A7D3 /* libfreenect.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F40F4FD193261320045A7D3 /* libfreenect.dylib */; };
+		3F5D9F58193A485F00BE7E08 /* libLeap.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F5D9F57193A485F00BE7E08 /* libLeap.dylib */; };
+		3F5D9F59193A488100BE7E08 /* libLeap.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3F5D9F57193A485F00BE7E08 /* libLeap.dylib */; };
 		3F9FECE5189EEA1E00114BA2 /* PUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3F9FECE3189EEA1E00114BA2 /* PUI.cpp */; };
 		3FA7069918A6E60C005E042C /* rect.vert in Sources */ = {isa = PBXBuildFile; fileRef = 3FA7069818A6E60C005E042C /* rect.vert */; };
 		3FA7069B18A6E617005E042C /* rect.frag in Sources */ = {isa = PBXBuildFile; fileRef = 3FA7069A18A6E617005E042C /* rect.frag */; };
@@ -37,7 +39,6 @@
 		3FC30D79188B3C4600DA490D /* ParticleController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3FC30D77188B3C4600DA490D /* ParticleController.cpp */; };
 		3FC30D7C188B3FFB00DA490D /* Color.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3FC30D7A188B3FFB00DA490D /* Color.cpp */; };
 		3FD41B211936F9DD007AEBC1 /* MyLeap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3FD41B1F1936F9DD007AEBC1 /* MyLeap.cpp */; };
-		3FD41B251937145E007AEBC1 /* libLeap.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FD41B241937145E007AEBC1 /* libLeap.dylib */; };
 		3FF5AB82188E489C00BC067C /* Vec2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3FF5AB80188E489C00BC067C /* Vec2.cpp */; };
 		3FF5AB85188E48C100BC067C /* GLAppController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FF5AB84188E48C100BC067C /* GLAppController.m */; };
 		3FF5AB8918924BA200BC067C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FF5AB8818924BA200BC067C /* QuartzCore.framework */; };
@@ -65,6 +66,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 6;
 			files = (
+				3F5D9F59193A488100BE7E08 /* libLeap.dylib in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -75,6 +77,7 @@
 		3F2EBA5D1894278200FF56DF /* p01.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = p01.frag; path = Shaders/p01.frag; sourceTree = "<group>"; };
 		3F2EBA5F1894D46F00FF56DF /* ParticlesOSX-PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ParticlesOSX-PrefixHeader.pch"; sourceTree = "<group>"; };
 		3F40F4FD193261320045A7D3 /* libfreenect.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfreenect.dylib; path = ../../../../usr/local/lib/libfreenect.dylib; sourceTree = "<group>"; };
+		3F5D9F57193A485F00BE7E08 /* libLeap.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libLeap.dylib; path = ParticlesOSX/Leap/libLeap.dylib; sourceTree = "<group>"; };
 		3F9FECE3189EEA1E00114BA2 /* PUI.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PUI.cpp; sourceTree = "<group>"; };
 		3F9FECE4189EEA1E00114BA2 /* PUI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PUI.h; sourceTree = "<group>"; };
 		3FA7069818A6E60C005E042C /* rect.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = rect.vert; path = Shaders/rect.vert; sourceTree = "<group>"; };
@@ -118,7 +121,6 @@
 		3FD41B201936F9DD007AEBC1 /* MyLeap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyLeap.h; path = Leap/MyLeap.h; sourceTree = "<group>"; };
 		3FD41B22193709A8007AEBC1 /* Leap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Leap.h; path = Leap/Leap.h; sourceTree = "<group>"; };
 		3FD41B23193709A8007AEBC1 /* LeapMath.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LeapMath.h; path = Leap/LeapMath.h; sourceTree = "<group>"; };
-		3FD41B241937145E007AEBC1 /* libLeap.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libLeap.dylib; path = ParticlesOSX/Leap/libLeap.dylib; sourceTree = "<group>"; };
 		3FF5AB80188E489C00BC067C /* Vec2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Vec2.cpp; sourceTree = "<group>"; };
 		3FF5AB81188E489C00BC067C /* Vec2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vec2.h; sourceTree = "<group>"; };
 		3FF5AB83188E48C100BC067C /* GLAppController.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = GLAppController.h; sourceTree = "<group>"; };
@@ -142,7 +144,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3FF5AB8B18924CCE00BC067C /* CoreVideo.framework in Frameworks */,
-				3FD41B251937145E007AEBC1 /* libLeap.dylib in Frameworks */,
+				3F5D9F58193A485F00BE7E08 /* libLeap.dylib in Frameworks */,
 				3FF5AB8918924BA200BC067C /* QuartzCore.framework in Frameworks */,
 				3FC30D2E188AFF3900DA490D /* Cocoa.framework in Frameworks */,
 				3F40F4FE193261320045A7D3 /* libfreenect.dylib in Frameworks */,
@@ -205,7 +207,7 @@
 		3FC30D2C188AFF3900DA490D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				3FD41B241937145E007AEBC1 /* libLeap.dylib */,
+				3F5D9F57193A485F00BE7E08 /* libLeap.dylib */,
 				3F40F4FD193261320045A7D3 /* libfreenect.dylib */,
 				3FF5AB8A18924CCE00BC067C /* CoreVideo.framework */,
 				3FF5AB8818924BA200BC067C /* QuartzCore.framework */,
