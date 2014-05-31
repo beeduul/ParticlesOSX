@@ -139,8 +139,8 @@ void ParticleController::initializeUI()
     
     {
         Color fillColor = Color(30/255.0, 150/255.0, 250/255.0);
-        PUI::PSlider *pSlider = new PUI::PSlider("velocity", 0, 2, PUI::Rect(Vec2(control_x, control_y), PSize(slider_width, slider_height)));
-        pSlider->setValue(m_params->getf("velocity"));
+        PUI::PSlider *pSlider = new PUI::PSlider("jitter", 0, 4, PUI::Rect(Vec2(control_x, control_y), PSize(slider_width, slider_height)));
+        pSlider->setValue(m_params->getf("jitter"));
         pSlider->setColors(fillColor, Color::DkGray);
         pSlider->setDelegate(this);
         m_ui_manager->addControl(pSlider);
@@ -249,7 +249,7 @@ void ParticleController::controlCallback(const PUI::PControl* control)
         float value = ((PUI::PSlider *) control)->getValue();
         m_params->setf(name, value);
         cout << "controlCallback '" << name << "'" << " value: " << value << endl;
-    } else if (name == "velocity") {
+    } else if (name == "jitter") {
         float value = ((PUI::PSlider *) control)->getValue();
         m_params->setf(name, value);
         cout << "controlCallback '" << name << "'" << " value: " << value << endl;
@@ -290,7 +290,7 @@ bool ParticleController::mouseDrag(PUI::MouseEvent &event, Vec2 &mouse_vec)
     if (!down)
     {
         Vec2 canvasPosition(m_appPtr->worldToView(event.getPoint()));
-        addParticleAt(canvasPosition, mouse_vec * m_params->getf("velocity"), ParticleController::eMouseDrag);
+        addParticleAt(canvasPosition, mouse_vec, ParticleController::eMouseDrag);
     }
     return down;
 }

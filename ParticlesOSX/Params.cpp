@@ -20,7 +20,7 @@ Params::Params()
     seti("draw_style", 0);
     setf("gravity", 0);
     setf("noise", 0.1);
-    setf("velocity", .25);
+    setf("jitter", 0);
 
     setColor("birthColor", Color::White);
     setColor("deathColor", Color::Black);

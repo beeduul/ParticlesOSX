@@ -97,6 +97,8 @@ void Particle::initialize(const Vec2 &location, const Vec2 &direction, float vel
 
 void Particle::update_behavior(const ParticleController &pc)
 {
+    float jitter = pc.getParams()->getf("jitter");
+    m_loc += Vec2(Rand::randFloat(-jitter, jitter), Rand::randFloat(-jitter, jitter));
     m_loc += m_vec * m_vel;
     m_vel *= m_decay;
     m_vec += m_gravity;
